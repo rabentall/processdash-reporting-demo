@@ -6,8 +6,11 @@
 <head>
 <title>HQL Query</title>
 <style>
+table { border-collapse: collapse }
+td { border: 1px solid silver; padding: 2px 5px }
 div#sql.collapsed div    { display:none }
 div#sql.expanded  p#link { display:none }
+div#sqlContent { font-family: monospace; margin-left: 1cm; width: 50% }
 </style>
 </head>
 <body>
@@ -88,9 +91,9 @@ Enter an HQL Query:<br/>
 <div>
 <h2>Raw SQL</h2>
 <p>Hibernate executed the following SQL statements during the execution of your query:</p>
-<pre><c:out value="${sql}"/></pre>
+<div id="sqlContent"><c:out value="${sql}"/></div>
 </div>
-
+&nbsp;
 </div>
 </c:if> <%-- not empty sql --%>
 
