@@ -7,7 +7,7 @@
 
 	<script-item>
 		<!-- display this text in the list of scripts/reports -->
-		<display-name>Reporting Demonstrations</display-name>
+		<display-name>Process Dashboard Reporting (Rbentall)</display-name>
 
 		<!-- this is the URI of the target page in this web app -->
 		<uri>/index.html</uri>
@@ -15,6 +15,10 @@
 		<!-- display this item for both team and master projects -->
 		<context>Team Project Root</context>
 		<context>Master Project Root</context>
+		
+		<!-- display in a personal project... -->
+		<context>Team Project Indiv Root</context>
+		
 	</script-item>
 
 </dashboard-add-on>

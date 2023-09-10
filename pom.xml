@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.tuma_solutions.reporting_demo</groupId>
-	<artifactId>pdash-reporting-demo</artifactId>
+	<groupId>com.github.rabentall.pdash-reporting-rbentall</groupId>
+	<artifactId>pdash-reporting-rbentall</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	<name>reporting-demo</name>
+	<name>pdash-reporting</name>
 
 	<properties>
 		<javaVersion>1.6</javaVersion>
 		<projectEncoding>utf-8</projectEncoding>
-		<jarsigner.keystore>keystore</jarsigner.keystore>
+		<jarsigner.keystore>../_signing/keystore</jarsigner.keystore>
 		<jarsigner.storepass>changeit</jarsigner.storepass>
 		<jarsigner.keypass>changeit</jarsigner.keypass>
 		<jarsigner.alias>pdash-addon</jarsigner.alias>
@@ -84,8 +84,8 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Dash-Pkg-ID>reportDemo</Dash-Pkg-ID>
-							<Dash-Pkg-Name>Reporting Demonstrations</Dash-Pkg-Name>
+							<Dash-Pkg-ID>pdash-reporting-rbentall</Dash-Pkg-ID>
+							<Dash-Pkg-Name>Process dashboard reporting (customised)</Dash-Pkg-Name>
 							<Dash-Pkg-Version>${project.version}</Dash-Pkg-Version>
 						</manifestEntries>
 					</archive>

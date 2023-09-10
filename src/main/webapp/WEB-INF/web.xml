@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app id="processdash-reporting-demo" version="3.0"
+<web-app id="pdash-reporting-rbentall" version="3.0"
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-	<display-name>Process Dashboard Reporting Demo</display-name>
+	<display-name>Process Dashboard Reporting (Rbentall)</display-name>
 
 	<servlet>
 		<display-name>Project Data Servlet</display-name>
