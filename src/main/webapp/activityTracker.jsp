@@ -7,42 +7,55 @@
 <html>
 <head>
 <title>Activity Tracker</title>
-<!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
-<script>
-
-$(document).ready( function () {
-    $('#myTable').DataTable();
-} );
-
-</script>
--->
-
 <script src="script/activityTracker.js" ></script>
 
 </head>
 
-<jsp:useBean id="planDates" class="java.util.HashMap" scope="request"/>
-<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Plan']}">
-<c:set target="${planDates}" property="${row[0]}" value="${row[1]}"/>
-</c:forEach>
 
-<jsp:useBean id="replanDates" class="java.util.HashMap" scope="request"/>
-<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Replan']}">
-<c:set target="${replanDates}" property="${row[0]}" value="${row[1]}"/>
-</c:forEach>
+<script>
 
-<jsp:useBean id="forecastDates" class="java.util.HashMap" scope="request"/>
-<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Forecast']}">
-<c:set target="${forecastDates}" property="${row[0]}" value="${row[1]}"/>
-</c:forEach>
+//
+// Flat tasklist:
+//
+const taskList_ = [
+<c:forEach var="task" items="${pdash.query['from TaskStatusFact as t where t.actualCompletionDate = null']}" varStatus="status" >
+    [
+        '${task.planItem}',
+        '${task.planTimeMin}',
+        '${task.actualTimeMin}'
+    ]<c:if test="${!status.last}">,</c:if> 
+</c:forEach>];
 
-<body onload="onload()">
+//
+// Document ready handler:
+//
+$(document).ready(() =>
+{
+  initTaskListTable(taskList_);
+});
+
+//
+// Callback for document ready:
+//
+
+//initTable();
+</script>
+
+<body>
 
 <h2>Activity Tracker</h2>
-<table border>
+<table id="timerTable" class="display" style="width:100%">
+
+</table>
+</body>
+</html>
+
+<!--
+
 <thead>
 <tr>
 <th>Timer</th>
@@ -57,7 +70,6 @@ $(document).ready( function () {
 </thead>
 <tbody >
 
-<c:forEach var="task" items="${pdash.query['from TaskStatusFact as t where t.actualCompletionDate = null']}">
 
 <tr>
     <c:set var="planItem">${task.planItem}</c:set> 
@@ -78,8 +90,10 @@ $(document).ready( function () {
 
 </tr>
 
-</c:forEach>
+
 </tbody>
-</table>
-</body>
-</html>
+
+
+
+
+-->

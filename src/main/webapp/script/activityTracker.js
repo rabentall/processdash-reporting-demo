@@ -1,63 +1,83 @@
+//
+// TODO - cols reorder
+// TODO - current task
+// TODO - OH/DT
+// TODO - Other times needed
+// TODO - script lookups.
+// TODO - frames layout
+// TODO - server-side json to replace jstl.
+// TODO - review code and comment up.
+// TODO - stylesheets.
+// TODO - Task ordering.
+// TODO - variance
+// TODO - WIP
 
 //
-// The array of recent tasks.
+// Populates map of task IDs + task paths in personal dashboard
 //
-//let recentTasks_;
+async function getTaskMap(){
+  //Get list of tasks from task API + build lookup map:
+  const taskLookup = new Map();    
 
-//
-// Define maximum number of recent tasks to allow.
-//
-//let recentTasksCount = 25;
+  try{
+    const response = await fetch("http://localhost:2468/api/v1/tasks/");
+    const tasksJson = await response.json();
 
-const taskLookup_ = new Map();
+    tasksJson.tasks.forEach((task) => {
+        taskLookup.set("/" + task.project.name + "/" + task.fullName, task.id);
+    });
+  } catch (error) {
+    console.error("Error in getTaskMap:", error.message);
+  }    
 
-//
-// Initialise array from timer
-//
-function onload(){
-    console.log("** Page loaded");
-
-
-
-    const tasks = 
-        fetch("http://localhost:2468/api/v1/tasks/")
-        .then(
-            async (data) => {
-                let tasksJson = await data.json();
-                tasksJson.tasks.forEach((task) => {
-                    taskLookup_.set("/" + task.project.name + "/" + task.fullName, task.id);
-                });
-            })
-        .catch((error) => {
-            console.error("**** Error caught in onload:", error);
-        });
-        return 
+  return taskLookup;
 }
 
-// function temp(param){
+async function initTaskListTable(taskList){
 
-//     console.log("***" + param.project.name + "|" + param.fullName + ":" + param.id);
-// }
+  const taskLookup = await getTaskMap();
+
+  new DataTable('#timerTable', {
+    columns: [
+      { title: 'PlanItem' },
+      { title: 'PlanTimeMin' },
+      { title: 'ActualTimeMin' },
+      { 
+        title: 'Timer',
+        data:  null,
+        render: function(data) {
+            activeTaskId = taskLookup.get(data[0]);
+            data = 
+              '<A HREF= "javascript:javascript:void(0)" onClick="javascript:toggleTimer(' + activeTaskId + ')">' + 
+              '<img border="0" title="Start timing" src="/control/startTiming.png">' + 
+              '</A>';
+
+            return data;
+        }
+      }      
+    ],
+    data: taskList
+  });  
+}
+
+//TODO - REORDER COLS
 
 //
 // TODO - DRAW TABLE:
 // https://datatables.net/examples/data_sources/js_array
 //
 
-function toggleTimer(planItem) {
-    console.log("toggleTimer:" + planItem);
-    console.log("lookup:" + taskLookup_.get(planItem));
+function toggleTimer(activeTaskId) {
 
-    const requestOptions = {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body:  'activeTaskId=' + taskLookup_.get(planItem) + '&timing=true'
-    };
-  
-    fetch('http://localhost:2468/api/v1/timer/', requestOptions)
-        .then(response => response)
-        .catch(error => {
-            console.error('There was an error!', error);
-        });
-    console.log("got to end:" + planItem);
-  }
+  const requestOptions = {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body:  'activeTaskId=' + activeTaskId + '&timing=true'
+  };
+
+  fetch('http://localhost:2468/api/v1/timer/', requestOptions)
+      .then(response => response)
+      .catch(error => {
+          console.error('There was an error!', error);
+      });
+}
