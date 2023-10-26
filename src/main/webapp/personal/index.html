@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link   href="./../style/master.css" rel="stylesheet" />
+
+<script>function pageContent(){
+    document.getElementById('contentFrameId').src = './activityTracker.jsp';  
+}
+</script></head>
+<body onload="pageContent()">
+<div class="container">
+<div class="index">
+  
+    <h3 class="h3Index">Personal plan</h3>
+    <a href="./activityTracker.jsp"   class="indexAnchor" target ="contentFrame" >Activity Tracker</a></br> 
+    <a href="./driverAnalysis.jsp"    class="indexAnchor" target ="contentFrame" >Driver Analysis</a></br>
+    <a href="./completedActivity.jsp" class="indexAnchor" target ="contentFrame" >Completed Activity</a></br>  
+    <a href="./costOfQuality.jsp"     class="indexAnchor" target ="contentFrame" >Cost of Quality</a></br>  
+
+</div>  
+<div class="content">
+  <iframe id="contentFrameId"   name="contentFrame"   frameborder="0" width="100%" height="98%"> </iframe>
+</div>
+
+</body>
+</html>

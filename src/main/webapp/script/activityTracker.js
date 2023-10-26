@@ -1,20 +1,62 @@
 //
-// TODO - cols reorder
-// TODO - current task
-// TODO - OH/DT
-// TODO - Other times needed
-// TODO - script lookups.
-// TODO - frames layout
-// TODO - server-side json to replace jstl.
-// TODO - review code and comment up.
-// TODO - stylesheets.
-// TODO - Task ordering.
-// TODO - variance
-// TODO - WIP
-
 //
 // Populates map of task IDs + task paths in personal dashboard
 //
+
+/*
+  Provides initial setup of data tables
+*/
+async function getData(taskList, planDates, replanDates, forecastDates){
+
+}
+
+/*
+  Want to create two tables:
+   - Direct time tasks
+   - Overhead tasks
+*/
+async function buildDirectTimeTable(taskList, planDates, replanDates, forecastDates, timerTasks){
+
+
+
+}
+
+async function buildOverheadTimeTable(timerTasks){
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function getTaskMap(){
   //Get list of tasks from task API + build lookup map:
   const taskLookup = new Map();    
@@ -24,7 +66,7 @@ async function getTaskMap(){
     const tasksJson = await response.json();
 
     tasksJson.tasks.forEach((task) => {
-        taskLookup.set("/" + task.project.name + "/" + task.fullName, task.id);
+        taskLookup.set("/" + task.project.fullName + "/" + task.fullName, task.id);
     });
   } catch (error) {
     console.error("Error in getTaskMap:", error.message);
@@ -39,6 +81,7 @@ async function initTaskListTable(taskList){
 
   new DataTable('#timerTable', {
     columns: [
+      { title: 'Key' },
       { title: 'PlanItem' },
       { title: 'PlanTimeMin' },
       { title: 'ActualTimeMin' },
@@ -47,10 +90,15 @@ async function initTaskListTable(taskList){
         data:  null,
         render: function(data) {
             activeTaskId = taskLookup.get(data[0]);
-            data = 
+
+            if(taskLookup.has(data[0])){
+              data = 
               '<A HREF= "javascript:javascript:void(0)" onClick="javascript:toggleTimer(' + activeTaskId + ')">' + 
               '<img border="0" title="Start timing" src="/control/startTiming.png">' + 
               '</A>';
+            }else{
+              //FIXMEconsole.error("Key missing from taskLookup:" + data[0]);
+            }
 
             return data;
         }
@@ -59,13 +107,6 @@ async function initTaskListTable(taskList){
     data: taskList
   });  
 }
-
-//TODO - REORDER COLS
-
-//
-// TODO - DRAW TABLE:
-// https://datatables.net/examples/data_sources/js_array
-//
 
 function toggleTimer(activeTaskId) {
 

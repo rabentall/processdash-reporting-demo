@@ -1,0 +1,46 @@
+/* FOR LAYOUT ONLY */
+
+header {
+    border-style: solid;
+    border-color: orange;
+}
+
+footer {
+    border-style: solid;
+    border-color: yellow;
+}
+
+div.index_top {
+    border-style: solid;
+    border-color: green;
+}
+div.index_bottom {
+    border-style: solid;
+    border-color: cyan;
+}
+div.content {
+    border-style: solid;
+    border-color: indigo;
+}
+
+
+
+div.window {
+    border-style: solid;
+    border-color: turquoise;
+}
+
+div.author {
+    border-style: solid;
+    border-color: blue;
+}
+
+div.diagram {
+    border-style: solid;
+    border-color: turquoise;    
+}
+
+div.index {
+    border-style: solid;
+    border-color: pink;    
+}

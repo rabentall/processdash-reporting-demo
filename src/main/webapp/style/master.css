@@ -1,0 +1,131 @@
+/*
+  Layout of a master slide - defines header and footer 
+*/
+/* @import "layout.css"; */
+
+@import "themes/prism.css";
+
+html, body {
+   height: 100%;
+   margin: 0px;  
+}
+    
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;       
+}
+
+.indexContent {
+    overflow-y: auto;    
+}
+
+.index {
+    max-width: 600px; 
+    min-width: 100px;     
+    width: 400px;
+    background-color: rgba(210, 222, 241, 0.392); /* light grey */    
+    height: 100%;    
+    overflow-x: hidden;
+    overflow-y: hidden;
+    resize: horizontal;    
+}
+
+.indexAnchor {
+    font-family: Gill Sans, sans-serif;
+    color: rgb(11,65,145);
+    margin-left: 30px;      
+}
+
+.content
+{
+    min-width:200px;
+    flex:3;
+    /* height: 98%; */
+    overflow: auto;  
+}
+
+h2
+{
+    font-family: Gill Sans, sans-serif;
+    font-weight: 100;
+    color: rgb(197,20,42); /* RED */    
+}
+
+h3
+{
+    font-family: Gill Sans, sans-serif;
+    font-weight: 100;
+    background-color: rgb(11,65,145); /* BLUE */
+    color: rgb(255,255,255);
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 10px 0px
+}
+
+.h3Index
+{
+    font-family: Gill Sans, sans-serif;
+    font-weight: 100;
+    background-color: rgb(11,65,145); /* BLUE */
+    color: rgb(255,255,255);
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 10px 0px
+}
+
+.h3Content
+{
+    font-family: Gill Sans, sans-serif;
+    font-weight: 100;
+    color: rgb(11,65,145); /* BLUE */
+    background-color: rgba(210, 222, 241, 0.392); /* light grey */        
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 10px 0px
+}
+
+.contentBody
+{
+    margin: 10px 10px 10px 10px;    
+}
+
+h4
+{
+    font-family: Gill Sans, sans-serif;
+    font-weight: 100;
+    background-color: rgb(121,121,124); /* GREY */
+    color: rgb(255,255,255);
+    padding:  5px 5px 5px 5px;
+    margin-left: 15px;
+    margin-right: 5px;  
+}
+
+
+
+
+
+
+
+
+
+
+/* .index_top {
+    margin: 5px 5px 5px 5px;
+    padding: 0px 0px 0px 0px;    
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 50%;
+    border-bottom-color: rgb(121,121,124);
+    border-bottom-style: dotted;
+    border-bottom-width: thin;
+
+    resize: vertical;    
+} */
+/* .index_bottom {
+    margin: 5px 5px 5px 5px;
+    padding: 0px 0px 0px 0px;    
+    overflow-y: hidden;
+    overflow-x: hidden;    
+    height: 49%;
+    border-bottom-color: rgb(121,121,124);
+    border-bottom-style: dotted;
+    border-bottom-width: thin;    
+} */
