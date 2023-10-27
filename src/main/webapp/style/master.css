@@ -1,13 +1,8 @@
-/*
-  Layout of a master slide - defines header and footer 
-*/
-/* @import "layout.css"; */
-
-@import "themes/prism.css";
-
 html, body {
    height: 100%;
    margin: 0px;  
+   font-family: Arial;   
+   color: rgb(11,65,145);   
 }
     
 .container {
@@ -24,7 +19,7 @@ html, body {
     max-width: 600px; 
     min-width: 100px;     
     width: 400px;
-    background-color: rgba(210, 222, 241, 0.392); /* light grey */    
+    background-color: rgba(210, 222, 241); /* light grey */    
     height: 100%;    
     overflow-x: hidden;
     overflow-y: hidden;
@@ -32,7 +27,6 @@ html, body {
 }
 
 .indexAnchor {
-    font-family: Gill Sans, sans-serif;
     color: rgb(11,65,145);
     margin-left: 30px;      
 }
@@ -41,20 +35,17 @@ html, body {
 {
     min-width:200px;
     flex:3;
-    /* height: 98%; */
     overflow: auto;  
 }
 
 h2
 {
-    font-family: Gill Sans, sans-serif;
     font-weight: 100;
     color: rgb(197,20,42); /* RED */    
 }
 
 h3
 {
-    font-family: Gill Sans, sans-serif;
     font-weight: 100;
     background-color: rgb(11,65,145); /* BLUE */
     color: rgb(255,255,255);
@@ -64,7 +55,6 @@ h3
 
 .h3Index
 {
-    font-family: Gill Sans, sans-serif;
     font-weight: 100;
     background-color: rgb(11,65,145); /* BLUE */
     color: rgb(255,255,255);
@@ -74,58 +64,63 @@ h3
 
 .h3Content
 {
-    font-family: Gill Sans, sans-serif;
     font-weight: 100;
     color: rgb(11,65,145); /* BLUE */
-    background-color: rgba(210, 222, 241, 0.392); /* light grey */        
+    background-color: rgba(210, 222, 241); /* light grey */        
     padding: 5px 5px 5px 5px;
-    margin: 0px 0px 10px 0px
+    margin: 0px 0px 10px 0px;
+
 }
 
 .contentBody
 {
-    margin: 10px 10px 10px 10px;    
+    margin: auto;
+    padding: 70px 0;
+    text-align: center;
+    margin-left:15px;
+    margin-right:15px;    
 }
 
 h4
 {
-    font-family: Gill Sans, sans-serif;
     font-weight: 100;
-    background-color: rgb(121,121,124); /* GREY */
-    color: rgb(255,255,255);
-    padding:  5px 5px 5px 5px;
-    margin-left: 15px;
-    margin-right: 5px;  
+    color: rgb(11,65,145); /* BLUE */ 
+    padding:  5px 5px 5px 0px;
+    text-align: left;
 }
 
+/* 
+Use to style timer tables
+*/
+
+table {
+    margin-left:15px;
+  }
 
 
+/* 
+Use to style the loader spinner:
+*/
+.loader {
 
+    margin: auto;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top:  16px solid rgba(210, 222, 241); /* light grey */        
 
-
-
-
-
-
-/* .index_top {
-    margin: 5px 5px 5px 5px;
-    padding: 0px 0px 0px 0px;    
-    overflow-y: hidden;
-    overflow-x: hidden;
-    height: 50%;
-    border-bottom-color: rgb(121,121,124);
-    border-bottom-style: dotted;
-    border-bottom-width: thin;
-
-    resize: vertical;    
-} */
-/* .index_bottom {
-    margin: 5px 5px 5px 5px;
-    padding: 0px 0px 0px 0px;    
-    overflow-y: hidden;
-    overflow-x: hidden;    
-    height: 49%;
-    border-bottom-color: rgb(121,121,124);
-    border-bottom-style: dotted;
-    border-bottom-width: thin;    
-} */
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

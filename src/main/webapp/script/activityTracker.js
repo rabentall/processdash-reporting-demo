@@ -104,8 +104,12 @@ async function initTaskListTable(taskList){
         }
       }      
     ],
-    data: taskList
-  });  
+    data: taskList,
+    "initComplete": function(settings, json) {
+      //Hide spinner when table load completed:
+      document.getElementById("pageLoader").style.display = "none";
+    }
+  });
 }
 
 function toggleTimer(activeTaskId) {

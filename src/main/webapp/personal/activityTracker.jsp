@@ -45,29 +45,21 @@ $(document).ready(() =>
   initTaskListTable(taskList_);
 });
 
-//
-// Callback for document ready:
-//
-
-//initTable();
 </script>
-<style>
-    /* TODO - LOADER */
-/* WORK IN PROGRESS - 2023-10-26 */
-table {
-    font-family: Gill Sans, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    color: rgb(11,65,145); /* BLUE */    
-  }
-</style>
+
 <body>
 
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
-<table id="timerTable" class="display" style="width:100%">
 
-</table>
+  <h4>Direct time tasks</h4>
+
+  <div   id="pageLoader" class="loader"></div>    
+  <table id="timerTable" class="display" style="width:100%"></table>
+
+  <h4>Overhead tasks</h4>
+
+
 </div>
 </body>
 </html>
