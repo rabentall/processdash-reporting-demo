@@ -52,13 +52,17 @@ $(document).ready(() =>
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
 
+  <h4>Current task</h4>
+  <p id="currentTask" class="currentTask">None</p>
+
   <h4>Direct time tasks</h4>
 
+  <!-- TODO - width of table -->
   <div   id="pageLoader" class="loader"></div>    
-  <table id="timerTable" class="display" style="width:100%"></table>
+  <table id="timerTable" class="compact hover" style="width:100%"></table>
 
   <h4>Overhead tasks</h4>
-
+  <!-- TODO - overhead table -->
 
 </div>
 </body>

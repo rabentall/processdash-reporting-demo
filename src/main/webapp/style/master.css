@@ -83,10 +83,19 @@ h3
 
 h4
 {
-    font-weight: 100;
+    font-weight: bold;
     color: rgb(11,65,145); /* BLUE */ 
     padding:  5px 5px 5px 0px;
     text-align: left;
+}
+
+
+.currentTask
+{
+    font-weight: bold;
+    color: rgb(197,20,42); /* RED */  
+    text-align: left;
+      
 }
 
 /* 

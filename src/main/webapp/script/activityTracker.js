@@ -79,30 +79,12 @@ async function initTaskListTable(taskList){
 
   const taskLookup = await getTaskMap();
 
-  new DataTable('#timerTable', {
+  var timerTable = new DataTable('#timerTable', {
     columns: [
-      { title: 'Key' },
+      { title: 'Key', visible: false },
       { title: 'PlanItem' },
       { title: 'PlanTimeMin' },
-      { title: 'ActualTimeMin' },
-      { 
-        title: 'Timer',
-        data:  null,
-        render: function(data) {
-            activeTaskId = taskLookup.get(data[0]);
-
-            if(taskLookup.has(data[0])){
-              data = 
-              '<A HREF= "javascript:javascript:void(0)" onClick="javascript:toggleTimer(' + activeTaskId + ')">' + 
-              '<img border="0" title="Start timing" src="/control/startTiming.png">' + 
-              '</A>';
-            }else{
-              //FIXMEconsole.error("Key missing from taskLookup:" + data[0]);
-            }
-
-            return data;
-        }
-      }      
+      { title: 'ActualTimeMin' }
     ],
     data: taskList,
     "initComplete": function(settings, json) {
@@ -110,6 +92,26 @@ async function initTaskListTable(taskList){
       document.getElementById("pageLoader").style.display = "none";
     }
   });
+
+  timerTable.on('click', 'tbody tr', function () {
+
+    
+
+    let activeTaskPath = timerTable.row(this).data()[1];
+
+    document.getElementById("currentTask").innerHTML = activeTaskPath;    
+    
+    activeTaskId = taskLookup.get(activeTaskPath); //Lookup from PlanItem path.
+
+    console.log("activeTaskId:" + activeTaskId);
+
+    if(taskLookup.has(activeTaskPath)){
+      toggleTimer(activeTaskId);
+    }else{
+      console.error("Key missing from taskLookup:" + activeTaskId);
+    }
+
+});
 }
 
 function toggleTimer(activeTaskId) {
