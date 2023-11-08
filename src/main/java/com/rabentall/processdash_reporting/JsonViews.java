@@ -50,10 +50,11 @@ class DataLoader{
 
   DataLoader(Gson gson, PDashContext ctx){
     gson_ = gson;
-    dashData.put("/processPhases", new ProcessPhases(ctx));
-    dashData.put("/taskList",      new TaskList(ctx));
+    dashData.put("/processPhases",  new ProcessPhases(ctx));
+    dashData.put("/taskList",       new TaskList(ctx));
     dashData.put("/wbsElementList", new WbsElementList(ctx));
-    dashData.put("/customColumns", new CustomColumns(ctx));
+    dashData.put("/customColumns",  new CustomColumns(ctx));
+    dashData.put("/notes",          new Notes(ctx));
   }
   
   String get(String pathInfo){
