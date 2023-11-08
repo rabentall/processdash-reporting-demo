@@ -7,8 +7,8 @@ import net.sourceforge.processdash.api.PDashContext;
 
 class CustomColumns extends DashData{
 
-  Map<String, CustomColumn> customColumns = new HashMap<String, CustomColumn>();
-  
+  Map<String, Map<Integer, String>> customColumns = new HashMap<String, Map<Integer, String>>();
+
   CustomColumns(PDashContext ctx){
     super(ctx);
   } 
@@ -28,7 +28,8 @@ class CustomColumns extends DashData{
 
     String previousAttribute = "";
 
-    CustomColumn customColumn = null;
+    Map<Integer, String> customColumn = null;
+
 
     // iterate over the data we received from the database
     for (Object[] row : getRows(hql)) {
@@ -41,26 +42,16 @@ class CustomColumns extends DashData{
             if(customColumn != null){
               customColumns.put(previousAttribute, customColumn);
             }
-            customColumn = new CustomColumn();
-            customColumn.columnName = currentAttribute;
-
+            
+            customColumn = new HashMap<Integer, String>();
+          
             previousAttribute = currentAttribute;
         }
 
-        //populate:
-        customColumn.customColumn.put(
-          (Integer)row[1],
-          (String)row[2]
-          );
+        customColumn.put(
+                  (Integer)row[1],
+                  (String)row[2]
+                  );
     }
   }
-}
-
-class CustomColumn{
-
-  String columnName;
-  Map<Integer, String> customColumn = new HashMap<Integer, String>();
-
-  CustomColumn(){}
-
 }
