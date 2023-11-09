@@ -55,6 +55,7 @@ class DataLoader{
     dashData.put("/wbsElementList", new WbsElementList(ctx));
     dashData.put("/customColumns",  new CustomColumns(ctx));
     dashData.put("/notes",          new Notes(ctx));
+    dashData.put("/defects",        new Defects(ctx));
   }
   
   String get(String pathInfo){
