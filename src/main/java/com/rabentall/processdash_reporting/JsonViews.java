@@ -57,6 +57,7 @@ class DataLoader{
     dashData.put("/notes",          new Notes(ctx));
     dashData.put("/defects",        new Defects(ctx));
     dashData.put("/dependencies",   new Dependencies(ctx));
+    dashData.put("/milestones",     new Milestones(ctx));
   }
   
   String get(String pathInfo){
