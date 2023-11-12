@@ -8,17 +8,13 @@ import net.sourceforge.processdash.api.PDashContext;
 class ProcessPhases extends DashData{
 
   List<ProcessPhase> processPhases = new ArrayList<ProcessPhase>();
-  
-  ProcessPhases(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql = "select distinct pi.phase.process.name, pi.phase.ordinal, pi.phase.shortName, pi.phase.typeName from PlanItem as pi order by 1,2";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         ProcessPhase p = new ProcessPhase();
         p.process = (String)row[0];

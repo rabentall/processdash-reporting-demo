@@ -8,12 +8,8 @@ import net.sourceforge.processdash.api.PDashContext;
 class WbsElementList extends DashData{
 
   List<WbsElementRow> wbsElementList = new ArrayList<WbsElementRow>();
-  
-  WbsElementList(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql =
     " select " + 
@@ -40,7 +36,7 @@ class WbsElementList extends DashData{
     "   tsf.planItem.wbsElement.key ";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         WbsElementRow wbs = new WbsElementRow();
         wbs.planItemProjectKey = (Integer)row[0];   

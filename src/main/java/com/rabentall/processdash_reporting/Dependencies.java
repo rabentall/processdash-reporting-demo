@@ -8,17 +8,13 @@ import net.sourceforge.processdash.api.PDashContext;
 class Dependencies extends DashData{
 
   List<Dependency> dependencies = new ArrayList<Dependency>();
-  
-  Dependencies(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql = "select dep.key, dep.type.name, dep.predecessor.id, dep.successor.id from PlanItemDependencyFact as dep";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         Dependency d = new Dependency();
         d.Id            = (Integer)row[0];

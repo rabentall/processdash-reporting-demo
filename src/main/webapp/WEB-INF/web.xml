@@ -18,4 +18,16 @@
 		<url-pattern>/projectData</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<display-name>JSON data views</display-name>
+		<servlet-name>jsonDataServlet</servlet-name>
+		<servlet-class>com.rabentall.processdash_reporting.JsonViews</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>jsonDataServlet</servlet-name>
+		<url-pattern>/jsonViews/*</url-pattern>
+	</servlet-mapping>
+
+
 </web-app>

@@ -11,15 +11,9 @@ import net.sourceforge.processdash.api.PDashContext;
 class Milestones extends DashData{
 
   List<Milestone> milestones = new ArrayList<Milestone>();
-  
-  //TODO - remove ctx
-  Milestones(PDashContext ctx){
-    super(ctx);
-  } 
-
   //TODO - make threadsafe
   //TODO - cache - refresh interval.
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql =
     " select                                                         " +
@@ -34,7 +28,7 @@ class Milestones extends DashData{
     " piaf.attribute.name='Milestone Commit Date'                    ";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         Milestone m = new Milestone();
         m.planItemId    = (Integer)row[0];

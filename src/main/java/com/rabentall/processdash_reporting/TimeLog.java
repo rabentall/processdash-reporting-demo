@@ -9,12 +9,8 @@ import net.sourceforge.processdash.api.PDashContext;
 class TimeLog extends DashData{
 
   List<TimeLogRow> timeLog = new ArrayList<TimeLogRow>();
-  
-  TimeLog(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql = 
     " select                         " + 
@@ -29,7 +25,7 @@ class TimeLog extends DashData{
     "   TimeLogFact as tlf           ";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         TimeLogRow tlr = new TimeLogRow();
         tlr.planItemId                   = (Integer)row[0];

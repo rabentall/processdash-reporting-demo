@@ -8,12 +8,8 @@ import net.sourceforge.processdash.api.PDashContext;
 class SizeMetrics extends DashData{
 
   List<SizeMetric> sizeMetrics = new ArrayList<SizeMetric>();
-  
-  SizeMetrics(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql = 
         " select " +
@@ -27,7 +23,7 @@ class SizeMetrics extends DashData{
 
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         SizeMetric sm = new SizeMetric();
         sm.planItemProjectId             = (Integer)row[0];

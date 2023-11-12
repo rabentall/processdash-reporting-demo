@@ -9,22 +9,18 @@ class CustomColumns extends DashData{
 
   List<CustomColumnRow> customColumns = new ArrayList<CustomColumnRow>();
 
-  CustomColumns(PDashContext ctx){
-    super(ctx);
-  } 
-
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql =
     " select                       " +
-    "    piaf.attribute.name,      " +    
+    "    piaf.attribute.name,      " +
     "    piaf.planItem.id,         " +
     "    piaf.value.text           " +
     " from                         " +
     "    PlanItemAttrFact as piaf  "; 
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         CustomColumnRow ccr = new CustomColumnRow();
         ccr.customColumnName = (String)row[0];

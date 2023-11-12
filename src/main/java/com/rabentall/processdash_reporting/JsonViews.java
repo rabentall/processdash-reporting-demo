@@ -38,9 +38,9 @@ public class JsonViews extends HttpServlet {
 
         Gson gson = new Gson();
 
-        DataLoader loader = new DataLoader(gson, ctx);
+        DataLoader loader = new DataLoader(gson);
 
-        resp.getOutputStream().print(loader.get(pathInfo));
+        resp.getOutputStream().print(loader.get(ctx, pathInfo));
     }
 
 }
@@ -53,25 +53,25 @@ class DataLoader{
 
   Set<String> values = dashData.keySet();
 
-  DataLoader(Gson gson, PDashContext ctx){
+  DataLoader(Gson gson){
     gson_ = gson;
-    dashData.put("/customColumns",  new CustomColumns(ctx));
-    dashData.put("/defects",        new Defects(ctx));
-    dashData.put("/dependencies",   new Dependencies(ctx));
-    dashData.put("/milestones",     new Milestones(ctx));
-    dashData.put("/notes",          new Notes(ctx));
-    dashData.put("/processPhases",  new ProcessPhases(ctx));
-    dashData.put("/sizeMetrics",    new SizeMetrics(ctx));  
-    dashData.put("/taskList",       new TaskList(ctx));
-    dashData.put("/timeLog",        new TimeLog(ctx));        
-    dashData.put("/wbsElementList", new WbsElementList(ctx));
+    dashData.put("/customColumns",  new CustomColumns());
+    dashData.put("/defects",        new Defects());
+    dashData.put("/dependencies",   new Dependencies());
+    dashData.put("/milestones",     new Milestones());
+    dashData.put("/notes",          new Notes());
+    dashData.put("/processPhases",  new ProcessPhases());
+    dashData.put("/sizeMetrics",    new SizeMetrics());  
+    dashData.put("/taskList",       new TaskList());
+    dashData.put("/timeLog",        new TimeLog());        
+    dashData.put("/wbsElementList", new WbsElementList());
   }
   
-  String get(String pathInfo){
+  String get(PDashContext ctx, String pathInfo){
 
     if(pathInfo != null || values.contains(pathInfo)){      
       DashData t = dashData.get(pathInfo);
-      t.load();
+      t.load(ctx);
       return gson_.toJson(t);
     } else {
       return gson_.toJson(values);   

@@ -8,12 +8,8 @@ import net.sourceforge.processdash.api.PDashContext;
 class TaskList extends DashData{
 
   List<TaskListRow> taskList = new ArrayList<TaskListRow>();
-  
-  TaskList(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {
+  void load(PDashContext ctx) {
     
     String hql =
     " select tsf.planItem.key, " +
@@ -28,7 +24,7 @@ class TaskList extends DashData{
     " from TaskStatusFact as tsf where tsf.actualCompletionDate = null order by tsf.planItem.key";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
 
         TaskListRow tsf = new TaskListRow();
         tsf.planItemKey = (Integer)row[0];

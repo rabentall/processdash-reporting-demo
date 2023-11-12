@@ -9,12 +9,8 @@ import net.sourceforge.processdash.api.PDashContext;
 class Defects extends DashData{
 
   List<Defect> defects = new ArrayList<Defect>();
-  
-  Defects(PDashContext ctx){
-    super(ctx);
-  } 
 
-  void load() {    
+  void load(PDashContext ctx) {    
     String hql = 
         " select                                       " +
         "   d.key,                                     " +
@@ -36,7 +32,7 @@ class Defects extends DashData{
         " from DefectLogFact as d order by d.foundDate ";
 
     // iterate over the data we received from the database
-    for (Object[] row : getRows(hql)) {
+    for (Object[] row : getRows(ctx, hql)) {
         defects.add(new Defect(row)); 
     }   
   }
