@@ -17,6 +17,11 @@ import net.sourceforge.processdash.api.PDashContext;
 
 import com.google.gson.Gson;
 
+/*
+ * TODO - INIT.
+ * 
+ */
+
 public class JsonViews extends HttpServlet {
 
     @Override
@@ -50,14 +55,16 @@ class DataLoader{
 
   DataLoader(Gson gson, PDashContext ctx){
     gson_ = gson;
-    dashData.put("/processPhases",  new ProcessPhases(ctx));
-    dashData.put("/taskList",       new TaskList(ctx));
-    dashData.put("/wbsElementList", new WbsElementList(ctx));
     dashData.put("/customColumns",  new CustomColumns(ctx));
-    dashData.put("/notes",          new Notes(ctx));
     dashData.put("/defects",        new Defects(ctx));
     dashData.put("/dependencies",   new Dependencies(ctx));
     dashData.put("/milestones",     new Milestones(ctx));
+    dashData.put("/notes",          new Notes(ctx));
+    dashData.put("/processPhases",  new ProcessPhases(ctx));
+    dashData.put("/sizeMetrics",    new SizeMetrics(ctx));  
+    dashData.put("/taskList",       new TaskList(ctx));
+    dashData.put("/timeLog",        new TimeLog(ctx));        
+    dashData.put("/wbsElementList", new WbsElementList(ctx));
   }
   
   String get(String pathInfo){

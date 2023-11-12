@@ -12,10 +12,13 @@ class Milestones extends DashData{
 
   List<Milestone> milestones = new ArrayList<Milestone>();
   
+  //TODO - remove ctx
   Milestones(PDashContext ctx){
     super(ctx);
   } 
 
+  //TODO - make threadsafe
+  //TODO - cache - refresh interval.
   void load() {
     
     String hql =
