@@ -7,6 +7,7 @@
 <html>
 <head>
 <title>Activity Tracker</title>
+<!-- FIXME USE LOCAL -->
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
@@ -14,35 +15,16 @@
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
+
 </head>
 
 <script>
-
-//
-// Flat tasklist:
-//
-const taskList_ = [
-<c:forEach var="task" items="${pdash.query['from TaskStatusFact as t where t.actualCompletionDate = null order by t.planItem.key']}" varStatus="status" >
-    ['${task.planItem.key}','${task.planItem}','${task.planTimeMin}','${task.actualTimeMin}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-
-//
-// Date columns
-//
-
-const planDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Plan']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-
-const replanDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Replan']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-    
-const forecastDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Forecast']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];    
 //
 // Document ready handler:
 //
 $(document).ready(() =>
 {
-  initTaskListTable(taskList_);
+  initTaskListTable();
 });
 
 </script>
@@ -53,7 +35,8 @@ $(document).ready(() =>
 <div class="contentBody">
 
   <h4>Current task</h4>
-  <p id="currentTask" class="currentTask">None</p>
+  <!-- TODO - NEEDS TO BE BASED ON A LISTENER... -->
+  <p id="currentTask" class="currentTask" onclick="currentTaskClick()">None</p>
 
   <h4>Direct time tasks</h4>
 
@@ -63,6 +46,12 @@ $(document).ready(() =>
 
   <h4>Overhead tasks</h4>
   <!-- TODO - overhead table -->
+  <div id="overheadTasks" class="overheadTasks" >
+    <button type="button" onclick="btn_Click('/LUK/OH/Admin')">Admin</button>
+    <button type="button" onclick="btn_Click('/EXT/Lunch')">Lunch</button>
+    <!-- <button type="button" onclick="pause_Click()">Pause</button> -->
+
+  </div>
 
 </div>
 </body>

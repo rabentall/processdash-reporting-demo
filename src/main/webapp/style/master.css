@@ -18,7 +18,7 @@ html, body {
 .index {
     max-width: 600px; 
     min-width: 100px;     
-    width: 400px;
+    width: 200px;
     background-color: rgba(210, 222, 241); /* light grey */    
     height: 100%;    
     overflow-x: hidden;
@@ -75,7 +75,7 @@ h3
 .contentBody
 {
     margin: auto;
-    padding: 70px 0;
+    /* padding: 70px 0; */
     text-align: center;
     margin-left:15px;
     margin-right:15px;    
