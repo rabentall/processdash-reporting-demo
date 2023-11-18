@@ -71,6 +71,7 @@ async function updateTimerStatus(){
 
 async function getTaskMap(){
   //Get list of tasks from task API + build lookup map:
+  //TIMEOUT - FUNCTION
   const taskLookup = new Map();    
 
   try{
@@ -93,11 +94,11 @@ async function getTaskList(){
   const taskList = new Array();    
 
   try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/taskList");
+    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/tasks");
     const taskListJson = await response.json();
 
-    taskListJson.taskList.forEach((task) => {
-      taskList.push([task.planItemKey, task.planItem, task.planTimeHours, task.actualTimeHours ]);
+    taskListJson.tasks.forEach((task) => {
+      taskList.push([task.planItemId, task.planItem, task.planTimeHours, task.actualTimeHours, task.isComplete ]);
     });
     console.log("CountOfTaskList:" + taskList.length);
 
@@ -124,19 +125,23 @@ async function initTaskListTable(){
 
   const taskLookup = await getTaskMap();
 
+  //TODO - FILTER TO ONLY INCLUDE OPEN TASKS
   var timerTable = new DataTable('#timerTable', {
     columns: [
       { title: 'Key', visible: false },
       { title: 'PlanItem' },
       { title: 'PlanTimeHours' },
-      { title: 'ActualTimeHours' }
+      { title: 'ActualTimeHours' },
+      { title: 'IsComplete'}
     ],
     data: taskList,
     "initComplete": function(settings, json) {
       //Hide spinner when table load completed:
       document.getElementById("pageLoader").style.display = "none";
     }
-  });
+  }
+
+  );
 
   timerTable.on('click', 'tbody tr', function () {
 
@@ -147,7 +152,7 @@ async function initTaskListTable(){
     
     activeTaskId = taskLookup.get(activeTaskPath); //Lookup from PlanItem path.
 
-    console.log("activeTaskId:" + activeTaskId);
+    console.log("*** activeTaskId:" + activeTaskId);
 
     if(taskLookup.has(activeTaskPath)){
       toggleTimer(activeTaskId);
@@ -155,7 +160,7 @@ async function initTaskListTable(){
       console.error("Key missing from taskLookup:" + activeTaskId);
     }
 
-});
+  });
 }
 
 function toggleTimer(activeTaskId) {
@@ -199,24 +204,7 @@ function pause_Click(){
   console.log("pauseClick");
 }
 
+function showCompletedTasksToggle(){
+  console.log("showCompletedTasksToggle");
+}
 
-/*
-
-const taskList_ = [
-<c:forEach var="task" items="${pdash.query['from TaskStatusFact as t where t.actualCompletionDate = null order by t.planItem.key']}" varStatus="status" >
-    ['${task.planItem.key}','${task.planItem}','${task.planTimeMin}','${task.actualTimeMin}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-
-//
-// Date columns
-//
-
-const planDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Plan']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-
-const replanDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Replan']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];
-    
-const forecastDates_ = [<c:forEach var="row" items="${pdash.query['select tdf.planItem.id, tdf.taskDate from TaskDateFact as tdf where tdf.measurementType.name=? ']['Forecast']}" varStatus="status" >
-    ['${row[0]}','${row[1]}']<c:if test="${!status.last}">,</c:if></c:forEach>];   
-
-*/
