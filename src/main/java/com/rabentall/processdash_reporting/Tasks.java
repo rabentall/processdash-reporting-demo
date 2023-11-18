@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class TaskList extends DashData{
+class Tasks extends DashData{
 
-  List<TaskListRow> taskList = new ArrayList<TaskListRow>();
+  List<Task> tasks = new ArrayList<Task>();
 
   void load(PDashContext ctx) {
     
@@ -35,7 +35,7 @@ class TaskList extends DashData{
     "     tsf.planItem, tdf.measurementType.name     ";
 
     Integer previousPlanItemId = null;
-    TaskListRow tsf       = null;
+    Task task       = null;
 
     // iterate over the data we received from the database
     for (Object[] row : getRows(ctx, hql)) {
@@ -43,51 +43,51 @@ class TaskList extends DashData{
       Integer planItemId = (Integer)row[0];
 
       if(!planItemId.equals(previousPlanItemId)){
-        if(tsf != null){
-            taskList.add(tsf);
+        if(task != null){
+            tasks.add(task);
         }
-        tsf = new TaskListRow();
+        task = new Task();
         previousPlanItemId = planItemId;
       }
 
-      tsf.planItemId   = (Integer)row[0];
-      tsf.projectId    = (Integer)row[1];
-      tsf.wbsElementId = (Integer)row[2];
-      tsf.taskId       = (Integer)row[3];            
+      task.planItemId   = (Integer)row[0];
+      task.projectId    = (Integer)row[1];
+      task.wbsElementId = (Integer)row[2];
+      task.taskId       = (Integer)row[3];            
 
-      tsf.project      = (String)row[4];
-      tsf.wbsElement   = (String)row[5]; 
-      tsf.task         = (String)row[6];  
-      tsf.phase        = (String)row[7];      
+      task.project      = (String)row[4];
+      task.wbsElement   = (String)row[5]; 
+      task.task         = (String)row[6];  
+      task.phase        = (String)row[7];      
 
-      tsf.planTimeHours = (Double)row[8];
-      tsf.actualTimeHours = (Double)row[9];
-      tsf.actualStartDate = (Date)row[10];
-      tsf.actualCompletionDate = (Date)row[11];
+      task.planTimeHours = (Double)row[8];
+      task.actualTimeHours = (Double)row[9];
+      task.actualStartDate = (Date)row[10];
+      task.actualCompletionDate = (Date)row[11];
 
-      tsf.planItem = tsf.project + "/" +tsf.wbsElement + "/" + tsf.task;
+      task.planItem = task.project + "/" +task.wbsElement + "/" + task.task;
 
-      tsf.isComplete = (tsf.actualCompletionDate != null);
+      task.isComplete = (task.actualCompletionDate != null);
 
       String measurementType = (String) row[12];
 
       switch(measurementType){
-          case "Plan"     : tsf.planDate     = (Date)row[13]; break;
-          case "Replan"   : tsf.replanDate   = (Date)row[13]; break;
-          case "Forecast" : tsf.forecastDate = (Date)row[13]; break;
+          case "Plan"     : task.planDate     = (Date)row[13]; break;
+          case "Replan"   : task.replanDate   = (Date)row[13]; break;
+          case "Forecast" : task.forecastDate = (Date)row[13]; break;
 
           default: break;                      
       }      
     }
 
     //Add last element - TODO - MORE ELEGANT SOLUTION
-    if(tsf != null){
-            taskList.add(tsf);
+    if(task != null){
+            tasks.add(task);
     }
   }
 }
 
-class TaskListRow{
+class Task{
   Integer planItemId;
   Integer projectId;  
   Integer wbsElementId;
@@ -105,5 +105,5 @@ class TaskListRow{
   Date    forecastDate;
   String  planItem;
   Boolean isComplete;
-  TaskListRow(){} 
+  Task(){} 
 }

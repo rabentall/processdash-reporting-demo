@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class WbsElementList extends DashData{
+class WbsElements extends DashData{
 
-  List<WbsElementRow> wbsElementList = new ArrayList<WbsElementRow>();
+  List<WbsElement> wbsElements = new ArrayList<WbsElement>();
 
   void load(PDashContext ctx) {
     
@@ -38,7 +38,7 @@ class WbsElementList extends DashData{
     // iterate over the data we received from the database
     for (Object[] row : getRows(ctx, hql)) {
 
-        WbsElementRow wbs = new WbsElementRow();
+        WbsElement wbs = new WbsElement();
         wbs.projectId = (Integer)row[0];   
         wbs.wbsElementId = (Integer)row[1];           
         wbs.project = (String)row[2];
@@ -50,12 +50,12 @@ class WbsElementList extends DashData{
         wbs.actualCompletionDate = (Date)row[8];
         wbs.isComplete = ((Number)row[9] == (Number)row[10]);
 
-        wbsElementList.add(wbs); 
+        wbsElements.add(wbs); 
     }
   }
 }
 
-class WbsElementRow{
+class WbsElement{
   Integer projectId;
   Integer wbsElementId;
   String  project;
@@ -66,5 +66,5 @@ class WbsElementRow{
   Date    actualStartDate;
   Date    actualCompletionDate;
   Boolean isComplete;
-  WbsElementRow(){} 
+  WbsElement(){} 
 }

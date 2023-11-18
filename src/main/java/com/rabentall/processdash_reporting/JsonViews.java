@@ -62,9 +62,9 @@ class DataLoader{
     dashData.put("/notes",          new Notes());
     dashData.put("/processPhases",  new ProcessPhases());
     dashData.put("/sizeMetrics",    new SizeMetrics());  
-    dashData.put("/taskList",       new TaskList());
+    dashData.put("/tasks",          new Tasks());
     dashData.put("/timeLog",        new TimeLog());        
-    dashData.put("/wbsElementList", new WbsElementList());
+    dashData.put("/wbsElements",    new WbsElements());
   }
   
   String get(PDashContext ctx, String pathInfo){
