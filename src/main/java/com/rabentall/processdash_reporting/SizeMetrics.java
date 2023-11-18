@@ -26,11 +26,11 @@ class SizeMetrics extends DashData{
     for (Object[] row : getRows(ctx, hql)) {
 
         SizeMetric sm = new SizeMetric();
-        sm.planItemProjectId             = (Integer)row[0];
-        sm.planItemWbsElementId          = (Integer)row[1];        
-        sm.sizeMetricShortName           = (String)row[2];
-        sm.sizeMetricMeasurementTypeName = (String)row[3];
-        sm.addedAndModifiedSize          = (Double)row[4];
+        sm.projectId             = (Integer)row[0];
+        sm.wbsElementId          = (Integer)row[1];        
+        sm.shortName             = (String)row[2];
+        sm.measurementType       = (String)row[3];
+        sm.addedAndModifiedSize  = (Double)row[4];
         
         sizeMetrics.add(sm); 
     }
@@ -40,10 +40,10 @@ class SizeMetrics extends DashData{
 }
 
 class SizeMetric{
-  Integer planItemProjectId;
-  Integer planItemWbsElementId;
-  String  sizeMetricShortName;
-  String  sizeMetricMeasurementTypeName;
+  Integer projectId;
+  Integer wbsElementId;
+  String  shortName;
+  String  measurementType;
   Double  addedAndModifiedSize;
   
   SizeMetric(){} 

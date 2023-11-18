@@ -39,18 +39,15 @@ class WbsElementList extends DashData{
     for (Object[] row : getRows(ctx, hql)) {
 
         WbsElementRow wbs = new WbsElementRow();
-        wbs.planItemProjectKey = (Integer)row[0];   
-        wbs.planItemWbsElementKey = (Integer)row[1];           
-        wbs.planItemProject = (String)row[2];
-        wbs.planItemWbsElement = (String)row[3]; 
+        wbs.projectId = (Integer)row[0];   
+        wbs.wbsElementId = (Integer)row[1];           
+        wbs.project = (String)row[2];
+        wbs.wbsElement = (String)row[3]; 
         wbs.process = (String)row[4]; 
         wbs.planTimeHours = (Double)row[5];
         wbs.actualTimeHours = (Double)row[6];
         wbs.actualStartDate = (Date)row[7];
         wbs.actualCompletionDate = (Date)row[8];
-
-        wbs.wbsElement = wbs.planItemProject + "/" +wbs.planItemWbsElement;
-
         wbs.isComplete = ((Number)row[9] == (Number)row[10]);
 
         wbsElementList.add(wbs); 
@@ -59,16 +56,15 @@ class WbsElementList extends DashData{
 }
 
 class WbsElementRow{
-  Integer planItemProjectKey;
-  Integer planItemWbsElementKey;
-  String  planItemProject;
-  String  planItemWbsElement;
+  Integer projectId;
+  Integer wbsElementId;
+  String  project;
+  String  wbsElement;
   String  process;
   Double  planTimeHours;
   Double  actualTimeHours;
   Date    actualStartDate;
   Date    actualCompletionDate;
-  String  wbsElement;
   Boolean isComplete;
   WbsElementRow(){} 
 }

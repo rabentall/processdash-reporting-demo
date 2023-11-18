@@ -11,15 +11,20 @@ class Notes extends DashData{
 
   void load(PDashContext ctx) {
 
-    String hql = "select pinf.planItem.key, pinf.note.text from PlanItemNoteFact as pinf";
+    String hql = "select pinf.planItem.id, pinf.planItem.project.id, pinf.planItem.wbsElement.id, pinf.planItem.task.id, pinf.note.text from PlanItemNoteFact as pinf";
 
     // iterate over the data we received from the database
     for (Object[] row : getRows(ctx, hql)) {
 
         Note n = new Note();
-        n.planItemKey = (Integer)row[0];
-        n.note = (String)row[1];
+        n.planItemId   = (Integer)row[0];
+        n.projectId    = (Integer)row[1];
+        n.wbsElementId = (Integer)row[2];
+        n.taskId       = (Integer)row[3];                        
+        n.note         = (String)row[4];
         
+        n.isWbsElement = (n.taskId == null);
+
         notes.add(n); 
     }
     
@@ -28,7 +33,12 @@ class Notes extends DashData{
 }
 
 class Note{
-  Integer planItemKey;
+  Integer planItemId;
+  Integer projectId;
+  Integer wbsElementId;
+  Integer taskId;
+  Boolean isWbsElement;
   String note;
+  
   Note(){} 
 }

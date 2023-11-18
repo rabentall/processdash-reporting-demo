@@ -29,8 +29,8 @@ class TimeLog extends DashData{
 
         TimeLogRow tlr = new TimeLogRow();
         tlr.planItemId                   = (Integer)row[0];
-        tlr.planItemProjectId            = (Integer)row[1];
-        tlr.planItemWbsElementId         = (Integer)row[2];        
+        tlr.projectId                    = (Integer)row[1];
+        tlr.wbsElementId                 = (Integer)row[2];        
         tlr.deltaMin                     = (Float)row[3];
         tlr.interruptMin                 = (Float)row[4];
         tlr.startDate                    = (Date)row[5];
@@ -43,8 +43,8 @@ class TimeLog extends DashData{
 
 class TimeLogRow{
   Integer planItemId;
-  Integer planItemProjectId;
-  Integer planItemWbsElementId;
+  Integer projectId;
+  Integer wbsElementId;
   Float   deltaMin;
   Float   interruptMin;
   Date    startDate;

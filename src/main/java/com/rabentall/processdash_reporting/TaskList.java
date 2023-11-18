@@ -13,17 +13,19 @@ class TaskList extends DashData{
     
     String hql = 
     " select                                         " +
-    "     tsf.planItem.key,                          " +
+    "     tsf.planItem.id,                           " +
+    "     tsf.planItem.project.id,                   " +
+    "     tsf.planItem.wbsElement.id,                " +
+    "     tsf.planItem.task.id,                      " +
     "     tsf.planItem.project.name,                 " +
     "     tsf.planItem.wbsElement.name,              " +
-    "     tsf.planItem.task.name,                    " +
+    "     tsf.planItem.task.name,                    " +            
     "     tsf.planItem.phase.name,                   " +
     "     tsf.planTimeMin/60.0,                      " +
     "     tsf.actualTimeMin/60.0,                    " +
     "     tsf.actualStartDate,                       " +
     "     tsf.actualCompletionDate,                  " +
-    "     tdf.planItem.id,                           " +
-    "     tdf.measurementType.name,                  " +
+    "     tdf.measurementType.name,                  " + 
     "     tdf.taskDate.fullDate                      " +
     " from                                           " +
     "     TaskStatusFact as tsf, TaskDateFact as tdf " +
@@ -48,23 +50,31 @@ class TaskList extends DashData{
         previousPlanItemId = planItemId;
       }
 
-      tsf.planItemKey = (Integer)row[0];
-      tsf.planItemProject = (String)row[1];
-      tsf.planItemWbsElement = (String)row[2]; 
-      tsf.planItemTask = (String)row[3];  
-      tsf.planItemPhase = (String)row[4];                      
-      tsf.planTimeHours = (Double)row[5];
-      tsf.actualTimeHours = (Double)row[6];
-      tsf.actualStartDate = (Date)row[7];
-      tsf.actualCompletionDate = (Date)row[8];
-      tsf.planItem = tsf.planItemProject + "/" +tsf.planItemWbsElement + "/" + tsf.planItemTask;
+      tsf.planItemId   = (Integer)row[0];
+      tsf.projectId    = (Integer)row[1];
+      tsf.wbsElementId = (Integer)row[2];
+      tsf.taskId       = (Integer)row[3];            
 
-      String measurementType = (String) row[10];
+      tsf.project      = (String)row[4];
+      tsf.wbsElement   = (String)row[5]; 
+      tsf.task         = (String)row[6];  
+      tsf.phase        = (String)row[7];      
+
+      tsf.planTimeHours = (Double)row[8];
+      tsf.actualTimeHours = (Double)row[9];
+      tsf.actualStartDate = (Date)row[10];
+      tsf.actualCompletionDate = (Date)row[11];
+
+      tsf.planItem = tsf.project + "/" +tsf.wbsElement + "/" + tsf.task;
+
+      tsf.isComplete = (tsf.actualCompletionDate != null);
+
+      String measurementType = (String) row[12];
 
       switch(measurementType){
-          case "Plan"     : tsf.planDate     = (Date)row[11]; break;
-          case "Replan"   : tsf.replanDate   = (Date)row[11]; break;
-          case "Forecast" : tsf.forecastDate = (Date)row[11]; break;
+          case "Plan"     : tsf.planDate     = (Date)row[13]; break;
+          case "Replan"   : tsf.replanDate   = (Date)row[13]; break;
+          case "Forecast" : tsf.forecastDate = (Date)row[13]; break;
 
           default: break;                      
       }      
@@ -78,11 +88,14 @@ class TaskList extends DashData{
 }
 
 class TaskListRow{
-  Integer planItemKey;
-  String  planItemProject;
-  String  planItemWbsElement;
-  String  planItemTask;
-  String  planItemPhase;    
+  Integer planItemId;
+  Integer projectId;  
+  Integer wbsElementId;
+  Integer taskId;
+  String  project;
+  String  wbsElement;
+  String  task;
+  String  phase;    
   Double  planTimeHours;
   Double  actualTimeHours;
   Date    actualStartDate;
@@ -91,5 +104,6 @@ class TaskListRow{
   Date    replanDate;
   Date    forecastDate;
   String  planItem;
+  Boolean isComplete;
   TaskListRow(){} 
 }
