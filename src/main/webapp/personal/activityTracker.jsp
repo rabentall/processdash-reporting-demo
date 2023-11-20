@@ -9,13 +9,23 @@
 <title>Activity Tracker</title>
 <!-- FIXME USE LOCAL -->
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />  
+
+<!-- <link rel="stylesheet" href="./../script/libs/DataTables/1.13.8/css/jquery.dataTables.css" />
+<script src="./../script/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="./../script/libs/DataTables/1.13.8/js/jquery.dataTables.js"></script> -->
+
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
+<style>
 
+</style>
 </head>
 
 <script>
@@ -41,8 +51,20 @@ $(document).ready(() =>
   <h4>Direct time tasks</h4>
 
   <!-- TODO - width of table -->
-  <div   id="pageLoader" class="loader"></div>    
+  <div   id="pageLoader" class="loader"></div>
+
+
   <table id="timerTable" class="compact hover" style="width:100%"></table>
+
+  <!-- TODO - WIP/Not started/Completed -->
+  <div   id="showCompletedTasksBox" >
+    <label for="cbShowCompleted">Completed:</label>
+    <input type="checkbox" id="cbShowCompleted" onclick="toggleTaskStatus()" />
+    <label for="cbShowTodo">Todo:</label>
+    <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
+    <label for="cbShowWip">WIP:</label>
+    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />        
+  </div>
 
   <h4>Overhead tasks</h4>
   <!-- TODO - overhead table -->

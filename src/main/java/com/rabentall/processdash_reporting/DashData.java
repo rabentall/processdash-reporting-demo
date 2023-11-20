@@ -18,3 +18,10 @@ abstract class DashData {
     abstract void load(PDashContext ctx);
 
 }
+
+enum ActivityStatus{
+    TODO,
+    WIP,
+    COMPLETED,
+    UNKNOWN
+};
