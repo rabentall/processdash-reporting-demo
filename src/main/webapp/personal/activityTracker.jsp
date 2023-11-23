@@ -53,10 +53,6 @@ $(document).ready(() =>
   <!-- TODO - width of table -->
   <div   id="pageLoader" class="loader"></div>
 
-
-  <table id="timerTable" class="compact hover" style="width:100%"></table>
-
-  <!-- TODO - WIP/Not started/Completed -->
   <div   id="showCompletedTasksBox" >
     <label for="cbShowCompleted">Completed:</label>
     <input type="checkbox" id="cbShowCompleted" onclick="toggleTaskStatus()" />
@@ -65,6 +61,9 @@ $(document).ready(() =>
     <label for="cbShowWip">WIP:</label>
     <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />        
   </div>
+
+  <table id="timerTable" class="compact hover" style="width:100%"></table>
+
 
   <h4>Overhead tasks</h4>
   <!-- TODO - overhead table -->

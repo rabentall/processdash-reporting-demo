@@ -10,6 +10,12 @@
 //FIXME - Table width.
 //FIXME - Timeouts
 
+//FIXME - ADD EXTRA COLS.
+const COL_IX_PLAN_ITEM_ID = 0;
+const COL_IX_PLAN_ITEM    = 1;
+const COL_IX_PLAN_TIME_HOURS = 2;
+const COL_IX_ACTUAL_TIME_HOURS = 3;
+const COL_IX_ACTIVITY_STATUS = 4;
 
 
 
@@ -39,6 +45,9 @@ const tasks_ = new Array();
 */
 async function initTaskListTable(){
 
+  //Initialise checkboxes:
+  initCheckboxes();
+
   //Set up a polling loop for the current task:
   setInterval(updateTimerStatus, 1000);
 
@@ -57,9 +66,14 @@ async function initTaskListTable(){
     columns: [
       { title: 'Key', visible: false },
       { title: 'PlanItem' },
-      { title: 'PlanTimeHours' },
-      { title: 'ActualTimeHours' },
-      { title: 'IsComplete'}
+      { title: 'Plan(Hrs)' },
+      { title: 'Act(Hrs)' },
+      { title: 'IsComplete', visible: false},
+      { title: 'Plan'},
+      { title: 'Replan'},
+      { title: 'Forecast'},
+      { title: 'Start'},
+      { title: 'End'}      
     ],
     data: tasks_,
     "initComplete": function(settings, json) {
@@ -68,12 +82,15 @@ async function initTaskListTable(){
     }
   });
 
+  //Initialise filter on table:
+  toggleTaskStatus();  
+
   /**
    * Event handler for row onclick event.
    */
   timerTable.on('click', 'tbody tr', function () {
 
-    let activeTaskPath = timerTable.row(this).data()[1];
+    let activeTaskPath = timerTable.row(this).data()[COL_IX_PLAN_ITEM];
     console.log("**** activeTaskPath:" + activeTaskPath);
 
     document.getElementById("currentTask").innerHTML = activeTaskPath;    
@@ -102,13 +119,38 @@ async function getTaskList(){
     const taskListJson = await response.json();
 
     taskListJson.tasks.forEach((task) => {
-      tasks_.push([task.planItemId, task.planItem, task.planTimeHours, task.actualTimeHours, getWbsElementStatus(task.project + '/' + task.wbsElement)]);
+      tasks_.push([
+        task.planItemId, 
+        task.planItem, 
+        task.planTimeHours.toFixed(2), 
+        task.actualTimeHours.toFixed(2), 
+        task.activityStatus,
+        getNullableDateValue(task, 'planDate'),
+        getNullableDateValue(task, 'replanDate'),
+        getNullableDateValue(task, 'forecastDate'),
+        getNullableDateValue(task, 'actualStartDate'),
+        getNullableDateValue(task, 'actualCompletionDate')              
+      ]);
+
+      console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
+      
     });
-    console.log("CountOfTaskList:" + tasks_.length);
+    console.log("CountOfTaskList:" + tasks_.length );
 
   } catch (error) {
     console.error("Error in getTaskList:", error.message);
   } 
+}
+
+//,        task.actualCompletionDate, task.planDate, task.replanDate, task.forecastDate
+
+function getNullableDateValue(obj, prop){
+  if(obj.hasOwnProperty(prop)){
+    var dateVal = new Date(obj[prop]);
+    return dateVal.toISOString().split('T')[0];
+  }else{
+  return "";
+  }
 }
 
 /**
@@ -163,7 +205,7 @@ async function updateTimerStatus(){
 
       let activeTask = timerJson_.timer.activeTask;
    
-      document.getElementById("currentTask").innerHTML =  "/" + activeTask.project.fullName + "/" + activeTask.fullName;
+      document.getElementById("currentTask").innerHTML = activeTask.project.fullName + "/" + activeTask.fullName;
 
 
     }else{
@@ -216,13 +258,42 @@ async function btn_Click(taskPath){
 
 }
 
-function toggleTaskStatus(){
-  console.log("toggleTaskStatus");
-  console.log("cbShowCompleted" + document.getElementById("cbShowCompleted").checked);
-  console.log("cbShowTodo" + document.getElementById("cbShowTodo").checked);
-  console.log("cbShowWip" + document.getElementById("cbShowWip").checked);
+/**
+ * On page load, we just have WIP tasks showing.
+ */
+function initCheckboxes(){
+  document.getElementById("cbShowWip").checked = true;
+}
 
-  //TODO - SET FILTER
+/**
+ * Use to apply filter to "activitystatus" column. contens of this column are an enup with values
+ *  - COMPLETED
+ *  - TODO
+ *  - WIP
+ */
+function toggleTaskStatus(){
+
+  var timerTable = new DataTable('#timerTable');
+
+  let taskStatus = "";
+  let sep = "";
+
+  if(document.getElementById("cbShowCompleted").checked){
+    taskStatus = taskStatus + "COMPLETED";
+    sep = "|";
+  }
+
+  if(document.getElementById("cbShowTodo").checked){
+    taskStatus = taskStatus + sep + "TODO";
+    sep = "|";
+  }
+
+  if(document.getElementById("cbShowWip").checked){
+    taskStatus = taskStatus + sep + "WIP";
+  }  
+
+  timerTable.column(COL_IX_ACTIVITY_STATUS).search(taskStatus, true).draw();
+
 }
 
 /*

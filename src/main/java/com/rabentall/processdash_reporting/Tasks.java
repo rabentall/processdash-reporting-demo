@@ -19,13 +19,13 @@ class Tasks extends DashData{
     "     tsf.planItem.task.id,                      " +
     "     tsf.planItem.project.name,                 " +
     "     tsf.planItem.wbsElement.name,              " +
-    "     tsf.planItem.task.name,                    " +            
+    "     tsf.planItem.task.name,                    " +
     "     tsf.planItem.phase.name,                   " +
     "     tsf.planTimeMin/60.0,                      " +
     "     tsf.actualTimeMin/60.0,                    " +
     "     tsf.actualStartDate,                       " +
     "     tsf.actualCompletionDate,                  " +
-    "     tdf.measurementType.name,                  " + 
+    "     tdf.measurementType.name,                  " +
     "     tdf.taskDate.fullDate                      " +
     " from                                           " +
     "     TaskStatusFact as tsf, TaskDateFact as tdf " +
@@ -50,15 +50,16 @@ class Tasks extends DashData{
         previousPlanItemId = planItemId;
       }
 
+      //TODO - RUNS ONCE FOR EACH DATE FIELD
       task.planItemId   = (Integer)row[0];
       task.projectId    = (Integer)row[1];
       task.wbsElementId = (Integer)row[2];
-      task.taskId       = (Integer)row[3];            
+      task.taskId       = (Integer)row[3];
 
       task.project      = (String)row[4];
-      task.wbsElement   = (String)row[5]; 
-      task.task         = (String)row[6];  
-      task.phase        = (String)row[7];      
+      task.wbsElement   = (String)row[5];
+      task.task         = (String)row[6];
+      task.phase        = (String)row[7];
 
       task.planTimeHours = (Double)row[8];
       task.actualTimeHours = (Double)row[9];
@@ -69,6 +70,16 @@ class Tasks extends DashData{
 
       task.isComplete = (task.actualCompletionDate != null);
 
+      if(task.actualStartDate == null && task.actualCompletionDate == null){
+        task.activityStatus = ActivityStatus.TODO;
+      } else if(task.actualStartDate != null  && task.actualCompletionDate == null){
+        task.activityStatus = ActivityStatus.WIP;
+      } else if( task.actualCompletionDate != null){
+        task.activityStatus = ActivityStatus.COMPLETED;
+      } else {
+        task.activityStatus = ActivityStatus.UNKNOWN;
+      }
+
       String measurementType = (String) row[12];
 
       switch(measurementType){
@@ -76,7 +87,7 @@ class Tasks extends DashData{
           case "Replan"   : task.replanDate   = (Date)row[13]; break;
           case "Forecast" : task.forecastDate = (Date)row[13]; break;
 
-          default: break;                      
+          default: break;
       }      
     }
 
@@ -105,5 +116,6 @@ class Task{
   Date    forecastDate;
   String  planItem;
   Boolean isComplete;
+  ActivityStatus activityStatus;
   Task(){} 
 }
