@@ -30,6 +30,11 @@ An array of wbselements returned from the jsonviews API. Provides access to comp
 var wbsElements_ = new Map();
 
 /*
+An array of labels returned from jsonViews API. Provides access to labels that can be displayed on tasklist. 
+*/
+var labels_ = new Map();
+
+/*
 A map of tasks returned from the personal data tasks API. Use to identify the task ID needed to start/stop the timer.
 */
 const timerTaskMap_ = new Map(); 
@@ -54,6 +59,7 @@ async function initTaskListTable(){
   /**
    * Initialise data arrays from webservices:
    */
+  await getLabels();
   await getWbsElements();
   await getTaskList();
   await getTimerTaskmap();
@@ -73,7 +79,8 @@ async function initTaskListTable(){
       { title: 'Replan'},
       { title: 'Forecast'},
       { title: 'Start'},
-      { title: 'End'}      
+      { title: 'End'},
+      { title: 'Labels'}
     ],
     data: tasks_,
     "initComplete": function(settings, json) {
@@ -129,7 +136,8 @@ async function getTaskList(){
         getNullableDateValue(task, 'replanDate'),
         getNullableDateValue(task, 'forecastDate'),
         getNullableDateValue(task, 'actualStartDate'),
-        getNullableDateValue(task, 'actualCompletionDate')              
+        getNullableDateValue(task, 'actualCompletionDate'),
+        getLabel(task.planItemId)
       ]);
 
       console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
@@ -142,14 +150,20 @@ async function getTaskList(){
   } 
 }
 
-//,        task.actualCompletionDate, task.planDate, task.replanDate, task.forecastDate
-
 function getNullableDateValue(obj, prop){
   if(obj.hasOwnProperty(prop)){
     var dateVal = new Date(obj[prop]);
     return dateVal.toISOString().split('T')[0];
   }else{
   return "";
+  }
+}
+
+function getLabel(planItemId){
+  if(labels_.has(planItemId)){
+    return labels_.get(planItemId);
+  } else{
+    return "";
   }
 }
 
@@ -191,6 +205,34 @@ async function getWbsElements(){
     console.log("CountOfwbsElements_:" + wbsElements_.size);    
   } catch (error) {
     console.error("Error in getWbsElements:", error.message);
+  } 
+}
+
+async function getLabels(){
+
+  labels_.clear(); //Clear out any existing data in the array.
+
+  try{
+    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/customColumns");
+    const labelsJson = await response.json();
+
+    labelsJson.customColumns.forEach((customColumn) => {
+
+      if(customColumn.name == 'Label'){
+
+        var thisValue = customColumn.value;
+
+        if(labels_.has(customColumn.planItemId)){
+          var oldValue = labels_.get(customColumn.planItemId);
+          labels_.set(customColumn.planItemId, oldValue + ";" + thisValue);
+        } else{
+          labels_.set(customColumn.planItemId, thisValue);
+        }
+      }
+    });
+    console.log("CountOflabels_:" + labels_.size);
+  } catch (error) {
+    console.error("Error in getLabels:", error.message);
   } 
 }
 
