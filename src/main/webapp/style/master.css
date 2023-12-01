@@ -96,13 +96,39 @@ h4
       
 }
 
+/*
+Use to style checkboxes that show/hide columns and rows:
+*/
 
+.checkBoxFormat{
+    float:left; /* Ensures that two groups of checkboxes display side by side  */
+    width: max-content; /* Shrink to fit set of boxes. */
+    font-weight: 100;
+    color: rgb(11,65,145); /* BLUE */
+    background-color: rgba(210, 222, 241); /* light grey */        
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
+    border-style: solid;
+    border-color: rgb(11,65,145); /*BLUE */
+    border-width: 1px;
+    margin:0px 0px 15px 00px;
+    
+  }
+
+  .checkBoxTitleFormat{
+    padding:0px 0px 0px 0px;    
+    margin: 0px 0px 0px 0px;  
+    text-align: left;  
+    font-style: italic;    
+  }
 
 /* 
 Use to style timer tables
 */
 
 table {
+    float:left;
+    width:100%;
     margin-left:15px;
   }
 

@@ -10,13 +10,6 @@
 //FIXME - Table width.
 //FIXME - Timeouts
 
-//FIXME - ADD EXTRA COLS.
-const COL_IX_PLAN_ITEM_ID = 0;
-const COL_IX_PLAN_ITEM    = 1;
-const COL_IX_PLAN_TIME_HOURS = 2;
-const COL_IX_ACTUAL_TIME_HOURS = 3;
-const COL_IX_ACTIVITY_STATUS = 4;
-
 
 
 /*
@@ -46,6 +39,22 @@ plan/actual/replan/forecast dates, custom cols, milestones etc.
 const tasks_ = new Array();
 
 /*
+  Col indices for timer table:
+*/
+const COL_IX_PLAN_ITEM_ID = 0;
+const COL_IX_PLAN_ITEM    = 1;
+const COL_IX_PLAN_TIME_HOURS = 2;
+const COL_IX_ACTUAL_TIME_HOURS = 3;
+const COL_IX_ACTIVITY_STATUS = 4;
+const COL_IX_PLAN_DATE = 5;
+const COL_IX_REPLAN_DATE = 6;
+const COL_IX_FORECAST_DATE = 7;
+const COL_IX_START_DATE = 8;
+const COL_IX_END_DATE = 9;
+const COL_IX_LABELS = 10;
+const COL_IX_NOTES = 11;
+
+/*
   Initialises all data needed for the page, then renders the tasks table.
 */
 async function initTaskListTable(){
@@ -64,24 +73,27 @@ async function initTaskListTable(){
   await getTaskList();
   await getTimerTaskmap();
 
-
   /**
    * Build the table:
    */
   var timerTable = new DataTable('#timerTable', {
     columns: [
-      { title: 'Key', visible: false },
-      { title: 'PlanItem' },
-      { title: 'Plan(Hrs)' },
-      { title: 'Act(Hrs)' },
+      { title: 'Key',        visible: false},  
+      { title: 'PlanItem',   visible: true, width: 200},
+      { title: 'Plan(Hrs)',  visible: false},
+      { title: 'Act(Hrs)',   visible: false},
       { title: 'IsComplete', visible: false},
-      { title: 'Plan'},
-      { title: 'Replan'},
-      { title: 'Forecast'},
-      { title: 'Start'},
-      { title: 'End'},
-      { title: 'Labels'}
+      { title: 'Plan',       visible: false},
+      { title: 'Replan',     visible: false},
+      { title: 'Forecast',   visible: false},
+      { title: 'Start',      visible: false},
+      { title: 'End',        visible: false},
+      { title: 'Labels',     visible: false},
+      { title: 'Notes',      visible: false}
     ],
+    "autoWidth": false,
+    fixedColumns: { left: 1 },
+    scrollX: true,
     data: tasks_,
     "initComplete": function(settings, json) {
       //Hide spinner when table load completed:
@@ -89,8 +101,9 @@ async function initTaskListTable(){
     }
   });
 
-  //Initialise filter on table:
-  toggleTaskStatus();  
+  //Initialise table row/column visibility:
+  toggleTaskStatus(); 
+  toggleColumnStatus();
 
   /**
    * Event handler for row onclick event.
@@ -137,7 +150,8 @@ async function getTaskList(){
         getNullableDateValue(task, 'forecastDate'),
         getNullableDateValue(task, 'actualStartDate'),
         getNullableDateValue(task, 'actualCompletionDate'),
-        getLabel(task.planItemId)
+        getLabel(task.planItemId),
+        "Notes"
       ]);
 
       console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
@@ -301,10 +315,21 @@ async function btn_Click(taskPath){
 }
 
 /**
- * On page load, we just have WIP tasks showing.
+ * On page load, we have WIP tasks showing with planItem column only.
  */
 function initCheckboxes(){
+
+  //Rows:
+  document.getElementById("cbShowCompleted").checked = false;
+  document.getElementById("cbShowTodo").checked = false;
   document.getElementById("cbShowWip").checked = true;
+
+  //Columns:
+  document.getElementById("cbShowDates").checked = false;
+  document.getElementById("cbShowHours").checked = true;
+  document.getElementById("cbShowLabels").checked = true;
+
+
 }
 
 /**
@@ -336,6 +361,33 @@ function toggleTaskStatus(){
 
   timerTable.column(COL_IX_ACTIVITY_STATUS).search(taskStatus, true).draw();
 
+}
+
+/*
+  Use to show/hide columns in the timer table
+*/
+function toggleColumnStatus(){
+
+  var timerTable = new DataTable('#timerTable');
+
+  var datesVisible = document.getElementById("cbShowDates").checked;
+  timerTable.column(COL_IX_PLAN_DATE).visible(datesVisible);
+  timerTable.column(COL_IX_REPLAN_DATE).visible(datesVisible);
+  timerTable.column(COL_IX_FORECAST_DATE).visible(datesVisible);
+  timerTable.column(COL_IX_START_DATE).visible(datesVisible);
+  timerTable.column(COL_IX_END_DATE).visible(datesVisible);
+
+  var hoursVisible = document.getElementById("cbShowHours").checked;
+  timerTable.column(COL_IX_PLAN_TIME_HOURS).visible(hoursVisible);  
+  timerTable.column(COL_IX_ACTUAL_TIME_HOURS).visible(hoursVisible);  
+
+  var labelsVisible = document.getElementById("cbShowLabels").checked;
+  timerTable.column(COL_IX_LABELS).visible(labelsVisible);
+
+  var notesVisible = document.getElementById("cbShowNotes").checked;
+  timerTable.column(COL_IX_NOTES).visible(notesVisible);
+
+  timerTable.columns.adjust().draw();
 }
 
 /*

@@ -17,15 +17,60 @@
 
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css" />
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
 
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
+
+<!-- WIP - STYLING TO GET IT TO LOOK OK:
+
+1. Question of column widths - do we redo each time we add/remove cols?
+2. position of search boxes - px or percent?
+3. Page number position?
+3. table container size?
+
+-->
+
 <style>
 
-</style>
+#timerTable{
+  max-width: 1000px;
+}
+
+#timerTable_Wrapper{
+  width:1000px;
+}
+
+
+#timerTable_length{
+  float:left;
+  padding: 5px 5px 5px 5px;  
+  margin:0px 0px 15px 0px;  
+}
+
+#timerTable_filter{
+  /* position: absolute;
+  left:250px;  */
+  padding: 5px 5px 5px 5px;  
+  margin:0px 0px 15px 0px; 
+}
+
+/* 
+#timerTable_paginate{
+  position: absolute;
+  left:940px;
+  padding: 5px 5px 5px 5px;  
+  margin:0px 0px 15px 0px;   
+} */
+
+
+  
+  </style>
 </head>
 
 <script>
@@ -50,19 +95,34 @@ $(document).ready(() =>
 
   <h4>Direct time tasks</h4>
 
-  <!-- TODO - width of table -->
-  <div   id="pageLoader" class="loader"></div>
-
-  <div   id="showCompletedTasksBox" >
+  <!-- Checkboxes to show/hide rows in task table: -->
+  <div id="showCompletedTasksBox" class="checkBoxFormat">
+    <h4 class="checkBoxTitleFormat">Rows</h4>
     <label for="cbShowCompleted">Completed:</label>
     <input type="checkbox" id="cbShowCompleted" onclick="toggleTaskStatus()" />
     <label for="cbShowTodo">Todo:</label>
     <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
     <label for="cbShowWip">WIP:</label>
-    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />        
+    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />  
+  </div>
+  <!-- Checkboxes to show/hide columns in task table: -->  
+  <div   id="showColumnsBox" class="checkBoxFormat">
+    <h4 class="checkBoxTitleFormat">Columns</h4>    
+    <label for="cbShowDates">Dates:</label>
+    <input type="checkbox" id="cbShowDates" onclick="toggleColumnStatus()" />
+    <label for="cbShowHours">Hours:</label>
+    <input type="checkbox" id="cbShowHours" onclick="toggleColumnStatus()" />
+    <label for="cbShowLabels">Labels:</label>
+    <input type="checkbox" id="cbShowLabels" onclick="toggleColumnStatus()" />
+    <label for="cbShowNotes">Notes:</label>
+    <input type="checkbox" id="cbShowNotes" onclick="toggleColumnStatus()" />            
   </div>
 
-  <table id="timerTable" class="compact hover" style="width:100%"></table>
+<!--  style=";width:100% compact hover display nowrap  width:100% float:left" -->
+
+<!-- TODO - CHECK OPTIONS CORRECT -->
+  <table id="timerTable" class="display compact nowrap hover cell-border" style="width:1200px" ></table>
+  <div   id="pageLoader" class="loader"></div>
 
 
   <h4>Overhead tasks</h4>
@@ -70,54 +130,8 @@ $(document).ready(() =>
   <div id="overheadTasks" class="overheadTasks" >
     <button type="button" onclick="btn_Click('/LUK/OH/Admin')">Admin</button>
     <button type="button" onclick="btn_Click('/EXT/Lunch')">Lunch</button>
-    <!-- <button type="button" onclick="pause_Click()">Pause</button> -->
-
   </div>
 
 </div>
 </body>
 </html>
-
-<!--
-
-<thead>
-<tr>
-<th>Timer</th>
-<th>Project/Task</th>
-<th>Plan Time</th>
-<th>Actual Time</th>
-<th>Percent Spent</th>
-<th>Plan Date</th>
-<th>Replan Date</th>
-<th>Forecast Date</th>
-</tr>
-</thead>
-<tbody >
-
-
-<tr>
-    <c:set var="planItem">${task.planItem}</c:set> 
-    <c:set var="planItemId">${task.planItem.key}</c:set>
-    <td><A HREF= "javascript:javascript:void(0)" onClick="javascript:toggleTimer('${planItem}')"><img border="0" title="Start timing" src="/control/startTiming.png"></A></td>
-    <td><c:out value="${task.planItem}" /></td>
-    <td><fmt:formatNumber value="${task.planTimeMin}"/></td>
-    <td><fmt:formatNumber value="${task.actualTimeMin}"/></td>
-    <td><c:if test="${task.planTimeMin > 0}"><fmt:formatNumber type="percent"
-        value="${task.actualTimeMin / task.planTimeMin}"/></c:if></td>
-    <td><c:out value="${planDates[planItemId]}"/></td>     
-    <td><c:out value="${replanDates[planItemId]}"/></td>
-    <td>
-        <c:if test="${forecastDates[planItemId] != 'Cannot calculate'}">
-            <c:out value="${forecastDates[planItemId]}"/>
-        </c:if>
-    </td>
-
-</tr>
-
-
-</tbody>
-
-
-
-
--->
