@@ -38,37 +38,44 @@
 
 <style>
 
-#timerTable{
-  max-width: 1000px;
-}
-
+/* Force width of timer table: */
 #timerTable_Wrapper{
   width:1000px;
 }
 
+#timerTable{
+  width:1000px;
+}
 
+/* Vertical spacing of "length" dropdown */
 #timerTable_length{
-  float:left;
-  padding: 5px 5px 5px 5px;  
   margin:0px 0px 15px 0px;  
 }
 
+/* Vertical spacing of "filter" dropdown */
 #timerTable_filter{
-  /* position: absolute;
-  left:250px;  */
-  padding: 5px 5px 5px 5px;  
   margin:0px 0px 15px 0px; 
 }
 
-/* 
-#timerTable_paginate{
-  position: absolute;
-  left:940px;
-  padding: 5px 5px 5px 5px;  
-  margin:0px 0px 15px 0px;   
-} */
+/* Enable pointer for left pair of cols (path, notes) */
+#timerTable_wrapper .dtfc-fixed-left {
+  cursor: pointer;
+}
 
-
+#notesPanel{
+  position: fixed; /* Stays fixed relative to viewport*/
+  border-style: solid;
+  border-color: rgb(11,65,145); /*BLUE */
+  border-width: 1px;
+  background-color: rgba(210, 222, 241); /* light grey */   
+  margin:0px 0px 15px 00px;
+  visibility: hidden;
+  left: 200px;
+  top: 400px;
+  width: 600px;
+  height: 200px;
+  z-index: 1;
+}
   
   </style>
 </head>
@@ -84,7 +91,7 @@ $(document).ready(() =>
 
 </script>
 
-<body>
+<body onkeyup="shortcutEventHandler(event);">
 
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
@@ -114,15 +121,12 @@ $(document).ready(() =>
     <input type="checkbox" id="cbShowHours" onclick="toggleColumnStatus()" />
     <label for="cbShowLabels">Labels:</label>
     <input type="checkbox" id="cbShowLabels" onclick="toggleColumnStatus()" />
-    <label for="cbShowNotes">Notes:</label>
-    <input type="checkbox" id="cbShowNotes" onclick="toggleColumnStatus()" />            
   </div>
 
-<!--  style=";width:100% compact hover display nowrap  width:100% float:left" -->
-
 <!-- TODO - CHECK OPTIONS CORRECT -->
-  <table id="timerTable" class="display compact nowrap hover cell-border" style="width:1200px" ></table>
+  <table id="timerTable" class="display compact nowrap hover cell-border"  ></table>
   <div   id="pageLoader" class="loader"></div>
+  <div   id="notesPanel" onclick="hideNotesPanel()"></div>
 
 
   <h4>Overhead tasks</h4>

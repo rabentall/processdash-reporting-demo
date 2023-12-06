@@ -22,7 +22,10 @@ class Milestones extends DashData{
     "   dep.predecessor.wbsElement.id,                               " +
     "   dep.predecessor.task.id,                                     " +        
     "   dep.successor.task.name,                                     " +
-    "   piaf.value.text                                              " +
+    "   piaf.value.text,                                              " +
+    "   dep.predecessor.project.name,                   " + 
+    "   dep.predecessor.wbsElement.name,                " +
+    "   dep.predecessor.task.name                       " +       
     " from PlanItemAttrFact as piaf, PlanItemDependencyFact as dep   " +
     " where                                                          " +
     " dep.successor.id = piaf.planItem.id and                        " +
@@ -39,6 +42,7 @@ class Milestones extends DashData{
         m.wbsElementId = (Integer)row[2];
         m.taskId       = (Integer)row[3];                        
         m.name         = (String) row[4];
+        m.planItem     = (String) row[6] + "/" + (String) row[7] + "/" + (String) row[8];
 
         try{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -61,6 +65,7 @@ class Milestone{
   Integer taskId;
   String  name;
   Date    commitDate;
+  String  planItem;
   
   Milestone(){} 
 }

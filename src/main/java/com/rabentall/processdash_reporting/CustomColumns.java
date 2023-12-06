@@ -12,15 +12,18 @@ class CustomColumns extends DashData{
   void load(PDashContext ctx) {
     
     String hql =
-    " select                       " +
-    "    piaf.attribute.name,      " +
-    "    piaf.planItem.id,         " +
+    " select                          " +
+    "    piaf.attribute.name,         " +
+    "    piaf.planItem.id,            " +
     "    piaf.planItem.project.id,    " +
     "    piaf.planItem.wbsElement.id, " +    
     "    piaf.planItem.task.id,       " +    
-    "    piaf.value.text           " +
-    " from                         " +
-    "    PlanItemAttrFact as piaf  "; 
+    "    piaf.value.text,             " +
+    "    piaf.planItem.project.name,    " + 
+    "    piaf.planItem.wbsElement.name, " +
+    "    piaf.planItem.task.name        " +
+    " from                            " +
+    "    PlanItemAttrFact as piaf     "; 
 
     // iterate over the data we received from the database
     for (Object[] row : getRows(ctx, hql)) {
@@ -33,6 +36,7 @@ class CustomColumns extends DashData{
         ccr.taskId       = (Integer)row[4];
         ccr.value        = (String)row[5];
         ccr.isWbsElement = (ccr.taskId == null);
+        ccr.planItem     = (String)row[6] + "/" + (String)row[7] + "/" + (String)row[8];
 
         customColumns.add(ccr);
     }
@@ -48,6 +52,7 @@ class CustomColumnRow{
   Integer taskId;
   String  value;
   Boolean isWbsElement;
+  String  planItem;
 
   CustomColumnRow(){}
 }

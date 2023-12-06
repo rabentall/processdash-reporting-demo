@@ -20,7 +20,10 @@ class TimeLog extends DashData{
     "   tlf.deltaMin,                " +
     "   tlf.interruptMin,            " +
     "   tlf.startDate,               " +
-    "   tlf.endDate                  " +
+    "   tlf.endDate,                  " +
+    "   tlf.planItem.project.name,    " +
+    "   tlf.planItem.wbsElement.name, " +
+    "   tlf.planItem.task.name        " +
     " from                           " +
     "   TimeLogFact as tlf           ";
 
@@ -36,6 +39,8 @@ class TimeLog extends DashData{
         tlr.startDate                    = (Date)row[5];
         tlr.endDate                      = (Date)row[6];        
         
+        tlr.planItem                     = (String) row[7] + "/" + (String) row[8] + "/" + (String) row[9];
+
         timeLog.add(tlr); 
     }
   }
@@ -49,6 +54,7 @@ class TimeLogRow{
   Float   interruptMin;
   Date    startDate;
   Date    endDate;
+  String  planItem;
   
   TimeLogRow(){} 
 }

@@ -29,7 +29,10 @@ class Defects extends DashData{
         "   d.fixTimeMin,                              " +
         "   d.fixCount,                                " +
         "   d.fixPending,                              " +
-        "   d.description.text                         " +
+        "   d.description.text,                        " +
+        "   d.planItem.project.name,                   " + 
+        "   d.planItem.wbsElement.name,                " +
+        "   d.planItem.task.name                       " +        
         " from DefectLogFact as d order by d.foundDate ";
 
     // iterate over the data we received from the database
@@ -59,6 +62,7 @@ class Defect{
   Short   fixCount;
   Boolean fixPending;  
   String  description;
+  String  planItem;
 
   Defect(Object[] row){
     id                    = (Integer)row[0];
@@ -80,6 +84,7 @@ class Defect{
     fixCount              = (Short)  row[14];
     fixPending            = (Boolean)row[15];    
     description           = (String) row[16];
+    planItem              = (String) row[17] + "/" + (String) row[18] + "/" + (String) row[19];
   }
 
   Defect(){} 

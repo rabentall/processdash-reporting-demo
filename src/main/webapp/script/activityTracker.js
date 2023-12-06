@@ -43,16 +43,17 @@ const tasks_ = new Array();
 */
 const COL_IX_PLAN_ITEM_ID = 0;
 const COL_IX_PLAN_ITEM    = 1;
-const COL_IX_PLAN_TIME_HOURS = 2;
-const COL_IX_ACTUAL_TIME_HOURS = 3;
-const COL_IX_ACTIVITY_STATUS = 4;
-const COL_IX_PLAN_DATE = 5;
-const COL_IX_REPLAN_DATE = 6;
-const COL_IX_FORECAST_DATE = 7;
-const COL_IX_START_DATE = 8;
-const COL_IX_END_DATE = 9;
-const COL_IX_LABELS = 10;
-const COL_IX_NOTES = 11;
+const COL_IX_NOTES = 2;
+const COL_IX_PLAN_TIME_HOURS = 3;
+const COL_IX_ACTUAL_TIME_HOURS = 4;
+const COL_IX_ACTIVITY_STATUS = 5;
+const COL_IX_PLAN_DATE = 6;
+const COL_IX_REPLAN_DATE = 7;
+const COL_IX_FORECAST_DATE = 8;
+const COL_IX_START_DATE = 9;
+const COL_IX_END_DATE = 10;
+const COL_IX_LABELS = 11;
+
 
 /*
   Initialises all data needed for the page, then renders the tasks table.
@@ -78,8 +79,9 @@ async function initTaskListTable(){
    */
   var timerTable = new DataTable('#timerTable', {
     columns: [
-      { title: 'Key',        visible: false},  
+      { title: 'Key',        visible: false},
       { title: 'PlanItem',   visible: true, width: 200},
+      { title: '...',        visible: true, width: 10},  
       { title: 'Plan(Hrs)',  visible: false},
       { title: 'Act(Hrs)',   visible: false},
       { title: 'IsComplete', visible: false},
@@ -88,11 +90,10 @@ async function initTaskListTable(){
       { title: 'Forecast',   visible: false},
       { title: 'Start',      visible: false},
       { title: 'End',        visible: false},
-      { title: 'Labels',     visible: false},
-      { title: 'Notes',      visible: false}
+      { title: 'Labels',     visible: false}
     ],
     "autoWidth": false,
-    fixedColumns: { left: 1 },
+    fixedColumns: { left: 2 },
     scrollX: true,
     data: tasks_,
     "initComplete": function(settings, json) {
@@ -105,26 +106,33 @@ async function initTaskListTable(){
   toggleTaskStatus(); 
   toggleColumnStatus();
 
-  /**
-   * Event handler for row onclick event.
-   */
-  timerTable.on('click', 'tbody tr', function () {
+  timerTable.on('click', 'tbody td', function() {
 
     let activeTaskPath = timerTable.row(this).data()[COL_IX_PLAN_ITEM];
-    console.log("**** activeTaskPath:" + activeTaskPath);
+    let colIndex = this.cellIndex;
+    if(colIndex == 1){
 
-    document.getElementById("currentTask").innerHTML = activeTaskPath;    
-    
-    activeTaskId = timerTaskMap_.get(activeTaskPath); //Lookup from PlanItem path.
+      let noteVisbility = document.getElementById("notesPanel").style.visibility;
 
-    console.log("*** activeTaskId:" + activeTaskId);
-
-    if(timerTaskMap_.has(activeTaskPath)){
-      toggleTimer(activeTaskId);
+      //Show notes + don't toggle timer.
+      //The first time this happens, the visibility property evaluates to an empty string.
+      //Notes panel is hidden when we click on it or hit escape.
+      if(noteVisbility == "" || noteVisbility == "hidden"){
+        document.getElementById("notesPanel").style.visibility = "visible";
+      }
+      
     }else{
-      console.error("Key missing from timerTaskMap_:" + activeTaskId);
+      //toggle timer.
+      activeTaskId = timerTaskMap_.get(activeTaskPath); //Lookup from PlanItem path.
+
+      if(timerTaskMap_.has(activeTaskPath)){
+        toggleTimer(activeTaskId);
+      }else{
+        console.error("Key missing from timerTaskMap_:" + activeTaskId);
+      }
     }
-  });
+  })
+
 }
 
 /**
@@ -140,8 +148,9 @@ async function getTaskList(){
 
     taskListJson.tasks.forEach((task) => {
       tasks_.push([
-        task.planItemId, 
+        task.planItemId,
         task.planItem, 
+        "...",         
         task.planTimeHours.toFixed(2), 
         task.actualTimeHours.toFixed(2), 
         task.activityStatus,
@@ -150,14 +159,13 @@ async function getTaskList(){
         getNullableDateValue(task, 'forecastDate'),
         getNullableDateValue(task, 'actualStartDate'),
         getNullableDateValue(task, 'actualCompletionDate'),
-        getLabel(task.planItemId),
-        "Notes"
-      ]);
+        getLabel(task.planItemId)
+        ]);
 
-      console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
+      //console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
       
     });
-    console.log("CountOfTaskList:" + tasks_.length );
+    //console.log("CountOfTaskList:" + tasks_.length );
 
   } catch (error) {
     console.error("Error in getTaskList:", error.message);
@@ -196,7 +204,7 @@ async function getTimerTaskmap(){
       //console.log("**** Task:" + task.project.fullName + "/" + task.fullName);
       timerTaskMap_.set(task.project.fullName + "/" + task.fullName, task.id);
     });
-    console.log("CountOftimerTaskMap_:" + timerTaskMap_.size);    
+    //console.log("CountOftimerTaskMap_:" + timerTaskMap_.size);    
   } catch (error) {
     console.error("Error in getTaskMap:", error.message);
   }    
@@ -216,7 +224,7 @@ async function getWbsElements(){
     wbsElementsJson.wbsElements.forEach((wbsElement) => {
       wbsElements_.set(wbsElement.project + "/" + wbsElement.wbsElement, wbsElement.activityStatus);
     });
-    console.log("CountOfwbsElements_:" + wbsElements_.size);    
+    //console.log("CountOfwbsElements_:" + wbsElements_.size);    
   } catch (error) {
     console.error("Error in getWbsElements:", error.message);
   } 
@@ -244,7 +252,7 @@ async function getLabels(){
         }
       }
     });
-    console.log("CountOflabels_:" + labels_.size);
+    //console.log("CountOflabels_:" + labels_.size);
   } catch (error) {
     console.error("Error in getLabels:", error.message);
   } 
@@ -300,11 +308,11 @@ function getWbsElementStatus(wbsElementPath){
 
 async function btn_Click(taskPath){
   
-  console.log("**** taskPath:" + taskPath);
+  //console.log("**** taskPath:" + taskPath);
   
   taskId = timerTaskMap_.get(taskPath); //Lookup from PlanItem path.
 
-  console.log("activeTaskId:" + taskId);
+  //console.log("activeTaskId:" + taskId);
 
   if(timerTaskMap_.has(taskPath)){
     toggleTimer(taskId);
@@ -384,10 +392,18 @@ function toggleColumnStatus(){
   var labelsVisible = document.getElementById("cbShowLabels").checked;
   timerTable.column(COL_IX_LABELS).visible(labelsVisible);
 
-  var notesVisible = document.getElementById("cbShowNotes").checked;
-  timerTable.column(COL_IX_NOTES).visible(notesVisible);
-
   timerTable.columns.adjust().draw();
+}
+
+function hideNotesPanel(){
+  document.getElementById("notesPanel").style.visibility = "hidden";
+
+}
+
+function shortcutEventHandler(event){
+  if(event.key=="Escape"){
+    document.getElementById("notesPanel").style.visibility = "hidden";
+  }
 }
 
 /*
@@ -415,20 +431,20 @@ async function buildOverheadTimeTable(timerTasks){
 
 
 // FIXME
-function currentTaskClick(){
-  console.log("**** CurrentTask:Click");
-  if(timerJson_.timer.timing){
-    //document.getElementById("currentTask").style.borderStyle = "solid";
-    //document.getElementById("currentTask").style.borderColor = "red";
-    //document.getElementById("currentTask").style.borderWidth = "2px";
-    console.log("**** RUNNING");
-  }else{
-    //document.getElementById("currentTask").style.borderStyle = "solid";
-    //document.getElementById("currentTask").style.borderColor = "rgba(210, 222, 241)";
-    //document.getElementById("currentTask").style.borderWidth = "2px";    
-    console.log("**** STOPPED");
-  }
-}
+// function currentTaskClick(){
+//   console.log("**** CurrentTask:Click");
+//   if(timerJson_.timer.timing){
+//     //document.getElementById("currentTask").style.borderStyle = "solid";
+//     //document.getElementById("currentTask").style.borderColor = "red";
+//     //document.getElementById("currentTask").style.borderWidth = "2px";
+//     console.log("**** RUNNING");
+//   }else{
+//     //document.getElementById("currentTask").style.borderStyle = "solid";
+//     //document.getElementById("currentTask").style.borderColor = "rgba(210, 222, 241)";
+//     //document.getElementById("currentTask").style.borderWidth = "2px";    
+//     console.log("**** STOPPED");
+//   }
+// }
 
 
 function pause_Click(){
