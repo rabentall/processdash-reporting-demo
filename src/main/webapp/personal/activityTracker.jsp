@@ -7,14 +7,6 @@
 <html>
 <head>
 <title>Activity Tracker</title>
-<!-- FIXME USE LOCAL -->
-
-
-<!-- <link rel="stylesheet" href="./../script/libs/DataTables/1.13.8/css/jquery.dataTables.css" />
-<script src="./../script/libs/jquery/3.7.0/jquery.min.js"></script>
-<script src="./../script/libs/DataTables/1.13.8/js/jquery.dataTables.js"></script> -->
-
-
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css" />
@@ -38,30 +30,8 @@
 
 <style>
 
-/* Force width of timer table: */
-#timerTable_Wrapper{
-  width:1000px;
-}
 
-#timerTable{
-  width:1000px;
-}
-
-/* Vertical spacing of "length" dropdown */
-#timerTable_length{
-  margin:0px 0px 15px 0px;  
-}
-
-/* Vertical spacing of "filter" dropdown */
-#timerTable_filter{
-  margin:0px 0px 15px 0px; 
-}
-
-/* Enable pointer for left pair of cols (path, notes) */
-#timerTable_wrapper .dtfc-fixed-left {
-  cursor: pointer;
-}
-
+/* WIP... not ready yet. */
 #notesPanel{
   position: fixed; /* Stays fixed relative to viewport*/
   border-style: solid;

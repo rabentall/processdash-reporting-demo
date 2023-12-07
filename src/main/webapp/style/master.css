@@ -132,6 +132,28 @@ table {
     margin-left:15px;
   }
 
+/* Force width of timer table: */
+#timerTable_Wrapper{
+    width:1000px;
+  }
+  
+  #timerTable{
+    width:1000px;
+  }
+
+/* Vertical spacing of "length" dropdown */
+#timerTable_length{
+    margin:0px 0px 15px 0px;  
+  }
+  
+  /* Vertical spacing of "filter" dropdown */
+  #timerTable_filter{
+    margin:0px 0px 15px 0px; 
+  }
+  
+
+
+
 
 /* 
 Use to style the loader spinner:

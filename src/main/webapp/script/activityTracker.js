@@ -28,6 +28,12 @@ An array of labels returned from jsonViews API. Provides access to labels that c
 var labels_ = new Map();
 
 /*
+An array of notes returned from jsonViews API.
+*/
+var notes_ = new Map();
+
+
+/*
 A map of tasks returned from the personal data tasks API. Use to identify the task ID needed to start/stop the timer.
 */
 const timerTaskMap_ = new Map(); 
@@ -53,6 +59,7 @@ const COL_IX_FORECAST_DATE = 8;
 const COL_IX_START_DATE = 9;
 const COL_IX_END_DATE = 10;
 const COL_IX_LABELS = 11;
+const COL_IX_NOTES_CONTENT = 12;
 
 
 /*
@@ -70,6 +77,7 @@ async function initTaskListTable(){
    * Initialise data arrays from webservices:
    */
   await getLabels();
+  await getNotes();
   await getWbsElements();
   await getTaskList();
   await getTimerTaskmap();
@@ -90,7 +98,8 @@ async function initTaskListTable(){
       { title: 'Forecast',   visible: false},
       { title: 'Start',      visible: false},
       { title: 'End',        visible: false},
-      { title: 'Labels',     visible: false}
+      { title: 'Labels',     visible: false},
+      { title: 'Notes',      visible: false}
     ],
     "autoWidth": false,
     fixedColumns: { left: 2 },
@@ -106,19 +115,52 @@ async function initTaskListTable(){
   toggleTaskStatus(); 
   toggleColumnStatus();
 
+  //Handle change of cursor when we have notes to view or a timer path to click:
+  //TODO - CLEANUP
+  timerTable.on('mouseenter', 'tbody td', function(){
+
+    let colIndex = this.cellIndex;
+    if(colIndex == 1){
+
+      let noteText =timerTable.row(this).data()[COL_IX_NOTES_CONTENT];
+      if(noteText != ""){
+        document.getElementsByTagName("body")[0].style.cursor = "pointer";        
+      }
+    } else if(colIndex == 0){
+      document.getElementsByTagName("body")[0].style.cursor = "pointer";              
+    }    
+  })
+
+  timerTable.on('mouseleave', 'tbody td', function(){
+
+    let colIndex = this.cellIndex;
+    if(colIndex == 0 || colIndex == 1){
+      document.getElementsByTagName("body")[0].style.cursor = "default";
+    }    
+  })
+
+
   timerTable.on('click', 'tbody td', function() {
 
     let activeTaskPath = timerTable.row(this).data()[COL_IX_PLAN_ITEM];
     let colIndex = this.cellIndex;
     if(colIndex == 1){
 
-      let noteVisbility = document.getElementById("notesPanel").style.visibility;
+      let noteVisibility = document.getElementById("notesPanel").style.visibility;
 
       //Show notes + don't toggle timer.
       //The first time this happens, the visibility property evaluates to an empty string.
       //Notes panel is hidden when we click on it or hit escape.
-      if(noteVisbility == "" || noteVisbility == "hidden"){
-        document.getElementById("notesPanel").style.visibility = "visible";
+      if(noteVisibility == "" || noteVisibility == "hidden"){
+
+        let noteText =timerTable.row(this).data()[COL_IX_NOTES_CONTENT];
+
+        if(noteText != ""){
+          document.getElementById("notesPanel").innerHTML = noteText;
+          document.getElementById("notesPanel").style.visibility = "visible";
+        }
+      }else{
+        document.getElementById("notesPanel").style.visibility = "hidden";
       }
       
     }else{
@@ -147,10 +189,14 @@ async function getTaskList(){
     const taskListJson = await response.json();
 
     taskListJson.tasks.forEach((task) => {
+
+      let noteText = getNote(task.planItemId);
+      let elipsis = (noteText != "") ? "..." : "";
+
       tasks_.push([
         task.planItemId,
         task.planItem, 
-        "...",         
+        elipsis,         
         task.planTimeHours.toFixed(2), 
         task.actualTimeHours.toFixed(2), 
         task.activityStatus,
@@ -159,7 +205,8 @@ async function getTaskList(){
         getNullableDateValue(task, 'forecastDate'),
         getNullableDateValue(task, 'actualStartDate'),
         getNullableDateValue(task, 'actualCompletionDate'),
-        getLabel(task.planItemId)
+        getLabel(task.planItemId),
+        noteText 
         ]);
 
       //console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
@@ -184,6 +231,14 @@ function getNullableDateValue(obj, prop){
 function getLabel(planItemId){
   if(labels_.has(planItemId)){
     return labels_.get(planItemId);
+  } else{
+    return "";
+  }
+}
+
+function getNote(planItemId){
+  if(notes_.has(planItemId)){
+    return notes_.get(planItemId);
   } else{
     return "";
   }
@@ -257,6 +312,27 @@ async function getLabels(){
     console.error("Error in getLabels:", error.message);
   } 
 }
+
+
+async function getNotes(){
+
+  notes_.clear(); //Clear out any existing data in the array.
+
+  try{
+    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/notes");
+    const notesJson = await response.json();
+
+    notesJson.notes.forEach((note) => {
+
+      notes_.set(note.planItemId, note.note);      
+
+    });
+    //console.log("CountOfNotes:" + notes_.size);
+  } catch (error) {
+    console.error("Error in getLabels:", error.message);
+  } 
+}
+
 
 
 async function updateTimerStatus(){
