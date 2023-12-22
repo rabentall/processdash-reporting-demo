@@ -22,10 +22,6 @@ Contains timer status as retrieved from the personal data timer API.
 */
 var timerJson_;
 
-
-var previousActiveRowReference_ = null;
-var currentActiveRowReference_  = null;
-
 /*
 An array of wbselements returned from the jsonviews API. Provides access to component status (completed/wip/todo).
 */
@@ -160,26 +156,17 @@ async function initTaskListTable(){
         document.getElementById("notesPanel").style.visibility = "hidden";        
       }
 
-      previousActiveRowReference_ = currentActiveRowReference_;
-      currentActiveRowReference_ = $(this).parent('tr');
-
-      let currentActiveTaskPath =  currentActiveRowReference_.children()[0].innerHTML;
+      var currentActiveRowReference = $(this).parent('tr');
+      let currentActiveTaskPath =  currentActiveRowReference.children()[0].innerHTML;
 
       let activeTaskId = timerTaskMap_.get(currentActiveTaskPath); //Lookup from PlanItem path.
 
       if(timerTaskMap_.has(currentActiveTaskPath)){
         toggleTimer(activeTaskId);
 
-        if(previousActiveRowReference_ != null){
-          previousActiveRowReference_.children('td').removeClass('active');
-        }
-  
-        currentActiveRowReference_.children('td').addClass('active');  
-
       }else{
         console.error("Key missing from timerTaskMap_:" + activeTaskId);
-      }
-      
+      }     
 
     } else if(colIndex == 1){
 
@@ -362,35 +349,16 @@ async function updateTimerStatus(){
     let activeTask = timerJson_.timer.activeTask;
     let timerTaskPath = activeTask.project.fullName + "/" + activeTask.fullName;
 
-    var timerTable = new DataTable('#timerTable');
-      
-    //Get the "current" view as seen by the timer.
-    var timerTableRowIndex = timerTable.row( function ( idx, data, node ) {
-      return data[COL_IX_PLAN_ITEM] == timerTaskPath ? true : false;
-    });
+    let estimatedHrs = activeTask.estimatedTime / 60.0;
+    let actualHrs = activeTask.actualTime / 60.0;
 
-    //See syntax example here....
-    //https://datatables.net/reference/type/row-selector
-    //
-
-    //Update "state variables:"
-    previousActiveRowReference_ = currentActiveRowReference_;
-    currentActiveRowReference_ = timerTable.rows(timerTableRowIndex).nodes().to$();
-
-    if(previousActiveRowReference_ != null){
-      previousActiveRowReference_.children('td').removeClass('active');
-    }
+    document.getElementById("estimatedHours").innerHTML = estimatedHrs.toFixed(2);
+    document.getElementById("actualHours").innerHTML = actualHrs.toFixed(2);    
 
     if(timerJson_.timer.timing){
-
-      currentActiveRowReference_.children('td').addClass('active');  
       document.getElementById("currentTask").innerHTML = timerTaskPath;
-
     }else{
-
-      currentActiveRowReference_.children('td').addClass('paused'); 
       document.getElementById("currentTask").innerHTML = timerTaskPath + " [PAUSED]";      
-
     }
 
   } catch (error) {
@@ -400,10 +368,19 @@ async function updateTimerStatus(){
 
 function toggleTimer(activeTaskId) {
 
+  //Fixme - pause after changing task.
+  var timingString = "";
+
+  if(timerJson_.timer.timing){
+    timingString='false';
+  }else{
+    timingString='true';
+  }
+
   const requestOptions = {
       method: 'PUT',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body:  'activeTaskId=' + activeTaskId + '&timing=true'
+      body:  'activeTaskId=' + activeTaskId + '&timing=' + timingString
   };
 
   fetch('http://localhost:2468/api/v1/timer/', requestOptions)
@@ -501,15 +478,6 @@ function toggleColumnStatus(){
 
   var labelsVisible = document.getElementById("cbShowLabels").checked;
   timerTable.column(COL_IX_LABELS).visible(labelsVisible);
-
-  //refresh style on "current" and "previous" active rows:
-  if(previousActiveRowReference_ != null){
-    previousActiveRowReference_.children('td').removeClass('active');
-  }
-
-  if(currentActiveRowReference_ != null){
-    currentActiveRowReference_.children('td').addClass('active');
-  }
 
   timerTable.columns.adjust().draw();
 }

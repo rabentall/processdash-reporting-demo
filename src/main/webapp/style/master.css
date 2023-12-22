@@ -122,6 +122,23 @@ Use to style checkboxes that show/hide columns and rows:
     font-style: italic;    
   }
 
+  #notesPanel{
+    position: fixed; /* Stays fixed relative to viewport*/
+    border-style: solid;
+    border-color: rgb(11,65,145); /*BLUE */
+    border-width: 1px;
+    background-color: rgba(210, 222, 241); /* light grey */   
+    margin:0px 0px 15px 00px;
+    visibility: hidden;
+    left: 200px;
+    top: 400px;
+    width: 600px;
+    height: 200px;
+    z-index: 1;
+    padding: 5px 5px 5px 5px;
+  }
+
+
 /* 
 Use to style timer tables
 */

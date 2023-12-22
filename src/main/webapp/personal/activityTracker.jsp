@@ -31,49 +31,22 @@
 <style>
 
 
-/* WIP... not ready yet. */
-#notesPanel{
-  position: fixed; /* Stays fixed relative to viewport*/
+#currentTaskTable{
+  float:left;
+  width:1000px;
+  margin-left:0px;
   border-style: solid;
   border-color: rgb(11,65,145); /*BLUE */
   border-width: 1px;
-  background-color: rgba(210, 222, 241); /* light grey */   
-  margin:0px 0px 15px 00px;
-  visibility: hidden;
-  left: 200px;
-  top: 400px;
-  width: 600px;
-  height: 200px;
-  z-index: 1;
 }
 
-#currentTask
+/* BINGO!*/
+.contentBody
 {
-    /* font-weight: bold; */
-    color:  rgb(11,65,145); 
-    text-align: left;
-
-      
+  width:1000px;
 }
 
-.active {
-    
-  /* Important means that we color the whole row. otherwise the fixed columns stay white. */
-  background: rgb(255, 215, 0) !important; 
-}
-
-.paused {
-  /* Important means that we color the whole row. otherwise the fixed columns stay white. */
-
-  background: rgb(255, 246, 204) !important;
-}
-
-/* .sorting dtfc-fixed-left{
- 
-} */
-
-  
-  </style>
+</style>
 </head>
 
 <script>
@@ -92,32 +65,22 @@ $(document).ready(() =>
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
 
-  <!-- <h4>Current task</h4>
-  <div id="currentTask" >None</div> -->
-  <!-- <table id="currentTaskTable" class="display compact nowrap hover cell-border"  >
+
+  <h4>Current task</h4>  
+
+  <table id="currentTaskTable" >
     <thead>
     <tr><td>Measure</td><td>value</td></tr>
   </thead>
   <tbody>
-    <tr><td>PlanItem</td><td>TODO</td></tr>
-    <tr><td>PlanHrs</td><td>TODO</td></tr>
-    <tr><td>ActualHrs</td><td>TODO</td></tr>
+    <tr><td>Current task</td><td><div id ="currentTask" class="currentTask" >Stopped</div></td></tr>
+    <tr><td>Estimated hrs</td><td><div id = "estimatedHours"></div></td></tr>
+    <tr><td>Actual hrs</td><td><div id = "actualHours"></div></td></tr> 
     </tbody>
-  </table> -->
+  </table>
 
-  <!-- TODO - NEEDS TO BE BASED ON A LISTENER... -->
-  <!-- <div id="currentTaskContainer" >
-    
-    <div id="currentTaskPlan" >10</div>
-    <div id="currentTaskAct">20</div>
-    <div id="componentTotal"></div> 
-
-  </div> -->
-
-  <h4>Current task</h4>  
-
-  <!-- TODO - text for Stopped/paused/running -->
-  <div id="currentTask" >Stopped</div>
+  
+  
 
   <h4>Direct time tasks</h4>
 
