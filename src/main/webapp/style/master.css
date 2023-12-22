@@ -108,9 +108,9 @@ Use to style checkboxes that show/hide columns and rows:
     background-color: rgba(210, 222, 241); /* light grey */        
     padding: 5px 5px 5px 5px;
     margin: 0px 0px 0px 0px;
-    border-style: solid;
-    border-color: rgb(11,65,145); /*BLUE */
-    border-width: 1px;
+    /* border-style: solid; */
+    /* border-color: rgb(11,65,145); BLUE */
+    /* border-width: 1px; */
     margin:0px 0px 15px 00px;
     
   }

@@ -9,13 +9,22 @@
 //FIXME - Overhead table
 //FIXME - Table width.
 //FIXME - Timeouts
-
+//TODO - WBSELement notes? how?
+//FIXME - HEader format -0 narrower than table.
+//FIXME - legacy GUI can select something not visible in table.
+//FIXME - how to "show" current task - make "top of table?" When paginated?
+//Not clear.
+//Next step - 
 
 
 /*
 Contains timer status as retrieved from the personal data timer API.
 */
 var timerJson_;
+
+
+var previousActiveRowReference_ = null;
+var currentActiveRowReference_  = null;
 
 /*
 An array of wbselements returned from the jsonviews API. Provides access to component status (completed/wip/todo).
@@ -139,21 +148,48 @@ async function initTaskListTable(){
     }    
   })
 
-
   timerTable.on('click', 'tbody td', function() {
 
-    let activeTaskPath = timerTable.row(this).data()[COL_IX_PLAN_ITEM];
-    let colIndex = this.cellIndex;
-    if(colIndex == 1){
+    let noteVisibility = document.getElementById("notesPanel").style.visibility;
 
-      let noteVisibility = document.getElementById("notesPanel").style.visibility;
+    let colIndex = this.cellIndex;
+
+    if(colIndex == 0){
+ 
+      if(noteVisibility == "visible"){
+        document.getElementById("notesPanel").style.visibility = "hidden";        
+      }
+
+      previousActiveRowReference_ = currentActiveRowReference_;
+      currentActiveRowReference_ = $(this).parent('tr');
+
+      let currentActiveTaskPath =  currentActiveRowReference_.children()[0].innerHTML;
+
+      let activeTaskId = timerTaskMap_.get(currentActiveTaskPath); //Lookup from PlanItem path.
+
+      if(timerTaskMap_.has(currentActiveTaskPath)){
+        toggleTimer(activeTaskId);
+
+        if(previousActiveRowReference_ != null){
+          previousActiveRowReference_.children('td').removeClass('active');
+        }
+  
+        currentActiveRowReference_.children('td').addClass('active');  
+
+      }else{
+        console.error("Key missing from timerTaskMap_:" + activeTaskId);
+      }
+      
+
+    } else if(colIndex == 1){
 
       //Show notes + don't toggle timer.
       //The first time this happens, the visibility property evaluates to an empty string.
       //Notes panel is hidden when we click on it or hit escape.
       if(noteVisibility == "" || noteVisibility == "hidden"){
 
-        let noteText =timerTable.row(this).data()[COL_IX_NOTES_CONTENT];
+        //FIXME
+        let noteText = timerTable.row(this).data()[COL_IX_NOTES_CONTENT];
 
         if(noteText != ""){
           document.getElementById("notesPanel").innerHTML = noteText;
@@ -164,14 +200,7 @@ async function initTaskListTable(){
       }
       
     }else{
-      //toggle timer.
-      activeTaskId = timerTaskMap_.get(activeTaskPath); //Lookup from PlanItem path.
-
-      if(timerTaskMap_.has(activeTaskPath)){
-        toggleTimer(activeTaskId);
-      }else{
-        console.error("Key missing from timerTaskMap_:" + activeTaskId);
-      }
+      //Do nothing....
     }
   })
 
@@ -208,12 +237,8 @@ async function getTaskList(){
         getLabel(task.planItemId),
         noteText 
         ]);
-
-      //console.log("__" + task.planItemId + ":" + task.hasOwnProperty('actualStartDate') + ":" + getNullableDateValue(task, 'actualStartDate')); 
       
     });
-    //console.log("CountOfTaskList:" + tasks_.length );
-
   } catch (error) {
     console.error("Error in getTaskList:", error.message);
   } 
@@ -256,10 +281,8 @@ async function getTimerTaskmap(){
     const timerTasksJson = await response.json();
 
     timerTasksJson.tasks.forEach((task) => {
-      //console.log("**** Task:" + task.project.fullName + "/" + task.fullName);
       timerTaskMap_.set(task.project.fullName + "/" + task.fullName, task.id);
     });
-    //console.log("CountOftimerTaskMap_:" + timerTaskMap_.size);    
   } catch (error) {
     console.error("Error in getTaskMap:", error.message);
   }    
@@ -279,7 +302,6 @@ async function getWbsElements(){
     wbsElementsJson.wbsElements.forEach((wbsElement) => {
       wbsElements_.set(wbsElement.project + "/" + wbsElement.wbsElement, wbsElement.activityStatus);
     });
-    //console.log("CountOfwbsElements_:" + wbsElements_.size);    
   } catch (error) {
     console.error("Error in getWbsElements:", error.message);
   } 
@@ -307,7 +329,6 @@ async function getLabels(){
         }
       }
     });
-    //console.log("CountOflabels_:" + labels_.size);
   } catch (error) {
     console.error("Error in getLabels:", error.message);
   } 
@@ -327,13 +348,10 @@ async function getNotes(){
       notes_.set(note.planItemId, note.note);      
 
     });
-    //console.log("CountOfNotes:" + notes_.size);
   } catch (error) {
     console.error("Error in getLabels:", error.message);
   } 
 }
-
-
 
 async function updateTimerStatus(){
 
@@ -341,15 +359,38 @@ async function updateTimerStatus(){
     const response = await fetch("http://localhost:2468/api/v1/timer/");
     timerJson_ = await response.json();
 
+    let activeTask = timerJson_.timer.activeTask;
+    let timerTaskPath = activeTask.project.fullName + "/" + activeTask.fullName;
+
+    var timerTable = new DataTable('#timerTable');
+      
+    //Get the "current" view as seen by the timer.
+    var timerTableRowIndex = timerTable.row( function ( idx, data, node ) {
+      return data[COL_IX_PLAN_ITEM] == timerTaskPath ? true : false;
+    });
+
+    //See syntax example here....
+    //https://datatables.net/reference/type/row-selector
+    //
+
+    //Update "state variables:"
+    previousActiveRowReference_ = currentActiveRowReference_;
+    currentActiveRowReference_ = timerTable.rows(timerTableRowIndex).nodes().to$();
+
+    if(previousActiveRowReference_ != null){
+      previousActiveRowReference_.children('td').removeClass('active');
+    }
+
     if(timerJson_.timer.timing){
 
-      let activeTask = timerJson_.timer.activeTask;
-   
-      document.getElementById("currentTask").innerHTML = activeTask.project.fullName + "/" + activeTask.fullName;
-
+      currentActiveRowReference_.children('td').addClass('active');  
+      document.getElementById("currentTask").innerHTML = timerTaskPath;
 
     }else{
-      document.getElementById("currentTask").innerHTML = "None"; 
+
+      currentActiveRowReference_.children('td').addClass('paused'); 
+      document.getElementById("currentTask").innerHTML = timerTaskPath + " [PAUSED]";      
+
     }
 
   } catch (error) {
@@ -384,18 +425,13 @@ function getWbsElementStatus(wbsElementPath){
 
 async function btn_Click(taskPath){
   
-  //console.log("**** taskPath:" + taskPath);
-  
   taskId = timerTaskMap_.get(taskPath); //Lookup from PlanItem path.
-
-  //console.log("activeTaskId:" + taskId);
 
   if(timerTaskMap_.has(taskPath)){
     toggleTimer(taskId);
   }else{
     console.error("Key missing from timerTaskMap_:" + taskId);
   }
-
 }
 
 /**
@@ -412,8 +448,6 @@ function initCheckboxes(){
   document.getElementById("cbShowDates").checked = false;
   document.getElementById("cbShowHours").checked = true;
   document.getElementById("cbShowLabels").checked = true;
-
-
 }
 
 /**
@@ -468,6 +502,15 @@ function toggleColumnStatus(){
   var labelsVisible = document.getElementById("cbShowLabels").checked;
   timerTable.column(COL_IX_LABELS).visible(labelsVisible);
 
+  //refresh style on "current" and "previous" active rows:
+  if(previousActiveRowReference_ != null){
+    previousActiveRowReference_.children('td').removeClass('active');
+  }
+
+  if(currentActiveRowReference_ != null){
+    currentActiveRowReference_.children('td').addClass('active');
+  }
+
   timerTable.columns.adjust().draw();
 }
 
@@ -480,49 +523,4 @@ function shortcutEventHandler(event){
   if(event.key=="Escape"){
     document.getElementById("notesPanel").style.visibility = "hidden";
   }
-}
-
-/*
-  Provides initial setup of data tables
-*/
-async function getData(taskList, planDates, replanDates, forecastDates){
-
-}
-
-/*
-  Want to create two tables:
-   - Direct time tasks
-   - Overhead tasks
-*/
-async function buildDirectTimeTable(taskList, planDates, replanDates, forecastDates, timerTasks){
-
-
-
-}
-
-async function buildOverheadTimeTable(timerTasks){
-
-}
-
-
-
-// FIXME
-// function currentTaskClick(){
-//   console.log("**** CurrentTask:Click");
-//   if(timerJson_.timer.timing){
-//     //document.getElementById("currentTask").style.borderStyle = "solid";
-//     //document.getElementById("currentTask").style.borderColor = "red";
-//     //document.getElementById("currentTask").style.borderWidth = "2px";
-//     console.log("**** RUNNING");
-//   }else{
-//     //document.getElementById("currentTask").style.borderStyle = "solid";
-//     //document.getElementById("currentTask").style.borderColor = "rgba(210, 222, 241)";
-//     //document.getElementById("currentTask").style.borderWidth = "2px";    
-//     console.log("**** STOPPED");
-//   }
-// }
-
-
-function pause_Click(){
-  console.log("pauseClick");
 }

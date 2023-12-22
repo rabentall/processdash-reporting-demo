@@ -46,6 +46,32 @@
   height: 200px;
   z-index: 1;
 }
+
+#currentTask
+{
+    /* font-weight: bold; */
+    color:  rgb(11,65,145); 
+    text-align: left;
+
+      
+}
+
+.active {
+    
+  /* Important means that we color the whole row. otherwise the fixed columns stay white. */
+  background: rgb(255, 215, 0) !important; 
+}
+
+.paused {
+  /* Important means that we color the whole row. otherwise the fixed columns stay white. */
+
+  background: rgb(255, 246, 204) !important;
+}
+
+/* .sorting dtfc-fixed-left{
+ 
+} */
+
   
   </style>
 </head>
@@ -66,9 +92,32 @@ $(document).ready(() =>
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
 
-  <h4>Current task</h4>
+  <!-- <h4>Current task</h4>
+  <div id="currentTask" >None</div> -->
+  <!-- <table id="currentTaskTable" class="display compact nowrap hover cell-border"  >
+    <thead>
+    <tr><td>Measure</td><td>value</td></tr>
+  </thead>
+  <tbody>
+    <tr><td>PlanItem</td><td>TODO</td></tr>
+    <tr><td>PlanHrs</td><td>TODO</td></tr>
+    <tr><td>ActualHrs</td><td>TODO</td></tr>
+    </tbody>
+  </table> -->
+
   <!-- TODO - NEEDS TO BE BASED ON A LISTENER... -->
-  <p id="currentTask" class="currentTask" onclick="currentTaskClick()">None</p>
+  <!-- <div id="currentTaskContainer" >
+    
+    <div id="currentTaskPlan" >10</div>
+    <div id="currentTaskAct">20</div>
+    <div id="componentTotal"></div> 
+
+  </div> -->
+
+  <h4>Current task</h4>  
+
+  <!-- TODO - text for Stopped/paused/running -->
+  <div id="currentTask" >Stopped</div>
 
   <h4>Direct time tasks</h4>
 
@@ -94,7 +143,15 @@ $(document).ready(() =>
   </div>
 
 <!-- TODO - CHECK OPTIONS CORRECT -->
-  <table id="timerTable" class="display compact nowrap hover cell-border"  ></table>
+
+  <!-- https://datatables.net/examples/styling/display.html
+  
+  stripe hover order-column row-border
+  
+  
+  display   hover  
+  -->
+  <table id="timerTable" class="nowrap  hover row-border compact cell-border"  ></table>
   <div   id="pageLoader" class="loader"></div>
   <div   id="notesPanel" onclick="hideNotesPanel()"></div>
 
