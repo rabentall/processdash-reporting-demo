@@ -18,33 +18,7 @@
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
-
-<!-- WIP - STYLING TO GET IT TO LOOK OK:
-
-1. Question of column widths - do we redo each time we add/remove cols?
-2. position of search boxes - px or percent?
-3. Page number position?
-3. table container size?
-
--->
-
 <style>
-
-
-#currentTaskTable{
-  float:left;
-  width:1000px;
-  margin-left:0px;
-  border-style: solid;
-  border-color: rgb(11,65,145); /*BLUE */
-  border-width: 1px;
-}
-
-/* BINGO!*/
-.contentBody
-{
-  width:1000px;
-}
 
 </style>
 </head>
@@ -65,22 +39,9 @@ $(document).ready(() =>
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
 
-
   <h4>Current task</h4>  
 
-  <table id="currentTaskTable" >
-    <thead>
-    <tr><td>Measure</td><td>value</td></tr>
-  </thead>
-  <tbody>
-    <tr><td>Current task</td><td><div id ="currentTask" class="currentTask" >Stopped</div></td></tr>
-    <tr><td>Estimated hrs</td><td><div id = "estimatedHours"></div></td></tr>
-    <tr><td>Actual hrs</td><td><div id = "actualHours"></div></td></tr> 
-    </tbody>
-  </table>
-
-  
-  
+  <table id="currentTaskTable" class=" nowrap cell-border compact " ></table>
 
   <h4>Direct time tasks</h4>
 
@@ -105,15 +66,6 @@ $(document).ready(() =>
     <input type="checkbox" id="cbShowLabels" onclick="toggleColumnStatus()" />
   </div>
 
-<!-- TODO - CHECK OPTIONS CORRECT -->
-
-  <!-- https://datatables.net/examples/styling/display.html
-  
-  stripe hover order-column row-border
-  
-  
-  display   hover  
-  -->
   <table id="timerTable" class="nowrap  hover row-border compact cell-border"  ></table>
   <div   id="pageLoader" class="loader"></div>
   <div   id="notesPanel" onclick="hideNotesPanel()"></div>
@@ -124,6 +76,7 @@ $(document).ready(() =>
   <div id="overheadTasks" class="overheadTasks" >
     <button type="button" onclick="btn_Click('/LUK/OH/Admin')">Admin</button>
     <button type="button" onclick="btn_Click('/EXT/Lunch')">Lunch</button>
+    <button type="button" onclick="btn_Pause()">Pause</button>    
   </div>
 
 </div>

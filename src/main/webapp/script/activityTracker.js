@@ -2,19 +2,11 @@
 //
 // Populates map of task IDs + task paths in personal dashboard
 //
-//FIXME - ForwardSlash
-//FIXME - Decimal places
-//FIXME - Dates
 //FIXME - Duplicate code
 //FIXME - Overhead table
 //FIXME - Table width.
 //FIXME - Timeouts
 //TODO - WBSELement notes? how?
-//FIXME - HEader format -0 narrower than table.
-//FIXME - legacy GUI can select something not visible in table.
-//FIXME - how to "show" current task - make "top of table?" When paginated?
-//Not clear.
-//Next step - 
 
 
 /*
@@ -23,7 +15,7 @@ Contains timer status as retrieved from the personal data timer API.
 var timerJson_;
 
 /*
-An array of wbselements returned from the jsonviews API. Provides access to component status (completed/wip/todo).
+An array of wbselements returned from the jsonViews API. Provides access to component status (completed/wip/todo).
 */
 var wbsElements_ = new Map();
 
@@ -37,7 +29,6 @@ An array of notes returned from jsonViews API.
 */
 var notes_ = new Map();
 
-
 /*
 A map of tasks returned from the personal data tasks API. Use to identify the task ID needed to start/stop the timer.
 */
@@ -48,6 +39,11 @@ An array of tasks returned from the jsonviews API. Provides access to task plan/
 plan/actual/replan/forecast dates, custom cols, milestones etc.
 */
 const tasks_ = new Array();
+
+/*
+An array of key-value pairs used to display current task status.
+*/
+const currentTaskInfo_ = new Array();
 
 /*
   Col indices for timer table:
@@ -66,17 +62,21 @@ const COL_IX_END_DATE = 10;
 const COL_IX_LABELS = 11;
 const COL_IX_NOTES_CONTENT = 12;
 
+/*
+Row indices for current task table:
+*/
+
+const ROW_IX_CURRENT_TASK = 0;
+const ROW_IX_ESTIMATED_HOURS = 1;
+const ROW_IX_ACTUAL_HOURS = 2;
 
 /*
-  Initialises all data needed for the page, then renders the tasks table.
+  Initialises all data needed for the page, then renders the tables.
 */
 async function initTaskListTable(){
 
   //Initialise checkboxes:
   initCheckboxes();
-
-  //Set up a polling loop for the current task:
-  setInterval(updateTimerStatus, 1000);
 
   /**
    * Initialise data arrays from webservices:
@@ -86,6 +86,7 @@ async function initTaskListTable(){
   await getWbsElements();
   await getTaskList();
   await getTimerTaskmap();
+  await getcurrentTaskInfo();
 
   /**
    * Build the table:
@@ -116,12 +117,25 @@ async function initTaskListTable(){
     }
   });
 
+  var currentTaskTable = new DataTable('#currentTaskTable',
+  {
+     columns: [
+       {width: 100},
+       {width: 200}
+    ],
+    info: false,
+    ordering: false,
+    paging: false,
+    searching: false,
+    autoWidth: false,
+    data: currentTaskInfo_
+});
+
   //Initialise table row/column visibility:
   toggleTaskStatus(); 
   toggleColumnStatus();
 
   //Handle change of cursor when we have notes to view or a timer path to click:
-  //TODO - CLEANUP
   timerTable.on('mouseenter', 'tbody td', function(){
 
     let colIndex = this.cellIndex;
@@ -136,6 +150,7 @@ async function initTaskListTable(){
     }    
   })
 
+  //Handle change of cursor when we have notes to view or a timer path to click:  
   timerTable.on('mouseleave', 'tbody td', function(){
 
     let colIndex = this.cellIndex;
@@ -144,14 +159,18 @@ async function initTaskListTable(){
     }    
   })
 
+  //Handle clicking on a cell in the timer table. Only the first two cols
+  //respond:
   timerTable.on('click', 'tbody td', function() {
 
     let noteVisibility = document.getElementById("notesPanel").style.visibility;
 
     let colIndex = this.cellIndex;
 
+    //planItem column:
     if(colIndex == 0){
  
+      //Hide notes if currently showing:
       if(noteVisibility == "visible"){
         document.getElementById("notesPanel").style.visibility = "hidden";        
       }
@@ -159,15 +178,17 @@ async function initTaskListTable(){
       var currentActiveRowReference = $(this).parent('tr');
       let currentActiveTaskPath =  currentActiveRowReference.children()[0].innerHTML;
 
-      let activeTaskId = timerTaskMap_.get(currentActiveTaskPath); //Lookup from PlanItem path.
+      //Get the activeTaskId from the timerTaskMap lookup.
+      let activeTaskId = timerTaskMap_.get(currentActiveTaskPath);
 
+      //If we have a valid taskId, set the timer to run:
       if(timerTaskMap_.has(currentActiveTaskPath)){
-        toggleTimer(activeTaskId);
-
+        setTimer(activeTaskId, true);
       }else{
         console.error("Key missing from timerTaskMap_:" + activeTaskId);
       }     
 
+    //notes elipsis (...)  
     } else if(colIndex == 1){
 
       //Show notes + don't toggle timer.
@@ -175,7 +196,6 @@ async function initTaskListTable(){
       //Notes panel is hidden when we click on it or hit escape.
       if(noteVisibility == "" || noteVisibility == "hidden"){
 
-        //FIXME
         let noteText = timerTable.row(this).data()[COL_IX_NOTES_CONTENT];
 
         if(noteText != ""){
@@ -190,6 +210,9 @@ async function initTaskListTable(){
       //Do nothing....
     }
   })
+
+  //Set up a polling loop for the current task at 100ms:
+  setInterval(updateTimerStatus, 100);
 
 }
 
@@ -228,6 +251,21 @@ async function getTaskList(){
     });
   } catch (error) {
     console.error("Error in getTaskList:", error.message);
+  } 
+}
+
+async function getcurrentTaskInfo(){
+
+  currentTaskInfo_.length = 0; //Clear out any existing data in the array.
+
+  try{
+
+    currentTaskInfo_.push(["Current task",  "TODO"]);
+    currentTaskInfo_.push(["Estimated hrs", "TODO"]);
+    currentTaskInfo_.push(["Actual hrs",    "TODO"]);
+      
+  } catch (error) {
+    console.error("Error in getcurrentTaskInfo:", error.message);
   } 
 }
 
@@ -352,13 +390,21 @@ async function updateTimerStatus(){
     let estimatedHrs = activeTask.estimatedTime / 60.0;
     let actualHrs = activeTask.actualTime / 60.0;
 
-    document.getElementById("estimatedHours").innerHTML = estimatedHrs.toFixed(2);
-    document.getElementById("actualHours").innerHTML = actualHrs.toFixed(2);    
+    //Update the current task table:
+    var currentTaskTable = new DataTable('#currentTaskTable');    
+    currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).data(timerTaskPath);
+    
+    currentTaskTable.cell(ROW_IX_ESTIMATED_HOURS, 1).data(estimatedHrs.toFixed(2));
+    currentTaskTable.cell(ROW_IX_ACTUAL_HOURS,    1).data(actualHrs.toFixed(2));
+
+    //Handles highlighting of current task path contents:
+    var currentTaskPathCell = currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).node();
+    $(currentTaskPathCell).addClass('currentTask');
 
     if(timerJson_.timer.timing){
-      document.getElementById("currentTask").innerHTML = timerTaskPath;
+      currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).data(timerTaskPath);
     }else{
-      document.getElementById("currentTask").innerHTML = timerTaskPath + " [PAUSED]";      
+      currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).data(timerTaskPath + " [PAUSED]");      
     }
 
   } catch (error) {
@@ -366,21 +412,12 @@ async function updateTimerStatus(){
   }      
 }
 
-function toggleTimer(activeTaskId) {
-
-  //Fixme - pause after changing task.
-  var timingString = "";
-
-  if(timerJson_.timer.timing){
-    timingString='false';
-  }else{
-    timingString='true';
-  }
+function setTimer(activeTaskId, timing) {
 
   const requestOptions = {
       method: 'PUT',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body:  'activeTaskId=' + activeTaskId + '&timing=' + timingString
+      body:  'activeTaskId=' + activeTaskId + '&timing=' + timing
   };
 
   fetch('http://localhost:2468/api/v1/timer/', requestOptions)
@@ -388,6 +425,7 @@ function toggleTimer(activeTaskId) {
       .catch(error => {
           console.error('There was an error!', error);
       });
+   
 }
 
 function getWbsElementStatus(wbsElementPath){
@@ -405,10 +443,17 @@ async function btn_Click(taskPath){
   taskId = timerTaskMap_.get(taskPath); //Lookup from PlanItem path.
 
   if(timerTaskMap_.has(taskPath)){
-    toggleTimer(taskId);
+    setTimer(taskId, true);
   }else{
     console.error("Key missing from timerTaskMap_:" + taskId);
   }
+}
+
+/*
+  Pause the current task.
+*/
+async function btn_Pause(){
+  setTimer(timerJson_.timer.activeTask.id, false);
 }
 
 /**
@@ -428,7 +473,7 @@ function initCheckboxes(){
 }
 
 /**
- * Use to apply filter to "activitystatus" column. contens of this column are an enup with values
+ * Use to apply filter to "activitystatus" column. Contents of this column are an enum with values
  *  - COMPLETED
  *  - TODO
  *  - WIP
