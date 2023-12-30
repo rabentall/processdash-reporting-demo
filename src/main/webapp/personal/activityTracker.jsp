@@ -43,7 +43,14 @@ $(document).ready(() =>
 
   <table id="currentTaskTable" class=" nowrap cell-border compact " ></table>
 
-  <h4>Direct time tasks</h4>
+  <!-- FIXME - 1 - what buttons? 2 - defaults + paths? 3 - styles -->
+  <div id="overheadTasks" class="overheadTasks" >
+    <button type="button" onclick="btn_Click('/OH/Admin')">Admin</button>
+    <button type="button" onclick="btn_Pause()">Pause</button>       
+    <button type="button" onclick="btn_Click('/EXT/Off work')">Off work</button>
+  </div>
+
+  <h4>Available tasks</h4>
 
   <!-- Checkboxes to show/hide rows in task table: -->
   <div id="showCompletedTasksBox" class="checkBoxFormat">
@@ -54,6 +61,8 @@ $(document).ready(() =>
     <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
     <label for="cbShowWip">WIP:</label>
     <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />  
+    <label for="cbShowOther">Other:</label>
+    <input type="checkbox" id="cbShowOther" onclick="toggleTaskStatus()" />      
   </div>
   <!-- Checkboxes to show/hide columns in task table: -->  
   <div   id="showColumnsBox" class="checkBoxFormat">
@@ -69,16 +78,6 @@ $(document).ready(() =>
   <table id="timerTable" class="nowrap  hover row-border compact cell-border"  ></table>
   <div   id="pageLoader" class="loader"></div>
   <div   id="notesPanel" onclick="hideNotesPanel()"></div>
-
-
-  <h4>Overhead tasks</h4>
-  <!-- TODO - overhead table -->
-  <div id="overheadTasks" class="overheadTasks" >
-    <button type="button" onclick="btn_Click('/LUK/OH/Admin')">Admin</button>
-    <button type="button" onclick="btn_Click('/EXT/Lunch')">Lunch</button>
-    <button type="button" onclick="btn_Pause()">Pause</button>    
-  </div>
-
 </div>
 </body>
 </html>

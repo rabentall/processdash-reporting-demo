@@ -30,15 +30,16 @@ An array of notes returned from jsonViews API.
 var notes_ = new Map();
 
 /*
-A map of tasks returned from the personal data tasks API. Use to identify the task ID needed to start/stop the timer.
-*/
-const timerTaskMap_ = new Map(); 
-
-/*
 An array of tasks returned from the jsonviews API. Provides access to task plan/actual effort, 
 plan/actual/replan/forecast dates, custom cols, milestones etc.
 */
-const tasks_ = new Array();
+const taskDetails_ = new Map();
+
+const tasksV2_ = new Map();
+
+const directHoursRoot_ = "/DT/";
+const overheadRoot_    = "/OH/";
+const offWorkRoot_     = "/EXT/";
 
 /*
 An array of key-value pairs used to display current task status.
@@ -83,9 +84,8 @@ async function initTaskListTable(){
    */
   await getLabels();
   await getNotes();
-  await getWbsElements();
-  await getTaskList();
-  await getTimerTaskmap();
+  await getTaskDetails();
+  await getTaskListUsingTimer();
   await getcurrentTaskInfo();
 
   /**
@@ -110,7 +110,7 @@ async function initTaskListTable(){
     "autoWidth": false,
     fixedColumns: { left: 2 },
     scrollX: true,
-    data: tasks_,
+    data: Array.from(tasksV2_.values()),
     "initComplete": function(settings, json) {
       //Hide spinner when table load completed:
       document.getElementById("pageLoader").style.display = "none";
@@ -120,8 +120,8 @@ async function initTaskListTable(){
   var currentTaskTable = new DataTable('#currentTaskTable',
   {
      columns: [
-       {width: 100},
-       {width: 200}
+       {width:  50}, //Must add up to 1000 (width of enclosing block)
+       {width: 950}
     ],
     info: false,
     ordering: false,
@@ -178,15 +178,7 @@ async function initTaskListTable(){
       var currentActiveRowReference = $(this).parent('tr');
       let currentActiveTaskPath =  currentActiveRowReference.children()[0].innerHTML;
 
-      //Get the activeTaskId from the timerTaskMap lookup.
-      let activeTaskId = timerTaskMap_.get(currentActiveTaskPath);
-
-      //If we have a valid taskId, set the timer to run:
-      if(timerTaskMap_.has(currentActiveTaskPath)){
-        setTimer(activeTaskId, true);
-      }else{
-        console.error("Key missing from timerTaskMap_:" + activeTaskId);
-      }     
+      btn_Click(currentActiveTaskPath);
 
     //notes elipsis (...)  
     } else if(colIndex == 1){
@@ -214,14 +206,20 @@ async function initTaskListTable(){
   //Set up a polling loop for the current task at 100ms:
   setInterval(updateTimerStatus, 100);
 
+  //TODO - set up a polling loop for periodically exporting data in-memory databases
+  //TODO - root paths for overhead and direct time tasks.
+
 }
 
 /**
  * Returns data for the tasklist, using the jsonviews API:
  */
-async function getTaskList(){
+async function getTaskDetails(){
 
-  tasks_.length = 0; //Clear out any existing data in the array.
+  taskDetails_.clear(); //Clear out any existing data in the array.
+
+  //TODO - ROOT OF "THIS" webservice.
+  //TODO - constant for url.
 
   try{
     const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/tasks");
@@ -229,13 +227,10 @@ async function getTaskList(){
 
     taskListJson.tasks.forEach((task) => {
 
-      let noteText = getNote(task.planItemId);
-      let elipsis = (noteText != "") ? "..." : "";
-
-      tasks_.push([
-        task.planItemId,
+      //TODO - TaskDetails class.
+      taskDetails_.set(
         task.planItem, 
-        elipsis,         
+        [
         task.planTimeHours.toFixed(2), 
         task.actualTimeHours.toFixed(2), 
         task.activityStatus,
@@ -244,14 +239,58 @@ async function getTaskList(){
         getNullableDateValue(task, 'forecastDate'),
         getNullableDateValue(task, 'actualStartDate'),
         getNullableDateValue(task, 'actualCompletionDate'),
-        getLabel(task.planItemId),
-        noteText 
+        getLabel(task.planItem),
+        task.planItem
         ]);
       
     });
+    console.log("**** taskDetailsSize:" + taskDetails_.size);
   } catch (error) {
-    console.error("Error in getTaskList:", error.message);
+    console.error("Error in getTaskDetails:", error.message);
   } 
+}
+
+async function getTaskListUsingTimer(){
+
+  tasksV2_.clear(); //Clear out any existing map entries.
+
+  try{
+    const response = await fetch("http://localhost:2468/api/v1/tasks/");
+    const timerTasksJson = await response.json();
+
+    timerTasksJson.tasks.forEach((task) => {
+
+      var planItem = task.project.fullName + "/" + task.fullName;
+
+      let noteText = getNote(planItem);
+      let elipsis = (noteText != "") ? "..." : "";      
+
+      if(planItem.startsWith(directHoursRoot_) || planItem.startsWith(overheadRoot_) || planItem.startsWith(offWorkRoot_)){
+        tasksV2_.set(
+          planItem,
+          [
+          task.id, 
+          planItem,
+          elipsis,
+          getTaskDetail(planItem, 0, ""),
+          getTaskDetail(planItem, 1, ""),
+          getTaskDetail(planItem, 2, "OTHER"), //IsComplete - used for "overhead" or other non-dt tasks.
+          getTaskDetail(planItem, 3, ""),
+          getTaskDetail(planItem, 4, ""),
+          getTaskDetail(planItem, 5, ""),
+          getTaskDetail(planItem, 6, ""),
+          getTaskDetail(planItem, 7, ""),
+          getTaskDetail(planItem, 8, ""),
+          noteText
+        ]);
+        //console.log("** INCLUDE:" + planItem);
+      }else{
+        //console.log("** EXCLUDE:" + planItem);
+      }
+    });
+  } catch (error) {
+    console.error("Error in getTaskMap:", error.message);
+  }
 }
 
 async function getcurrentTaskInfo(){
@@ -278,58 +317,29 @@ function getNullableDateValue(obj, prop){
   }
 }
 
-function getLabel(planItemId){
-  if(labels_.has(planItemId)){
-    return labels_.get(planItemId);
+function getLabel(planItem){
+  if(labels_.has(planItem)){
+    return labels_.get(planItem);
   } else{
     return "";
   }
 }
 
-function getNote(planItemId){
-  if(notes_.has(planItemId)){
-    return notes_.get(planItemId);
+function getNote(planItem){
+  if(notes_.has(planItem)){
+    return notes_.get(planItem);
   } else{
     return "";
   }
 }
 
-/**
- * Returns data for the timer task map, using the personal data tasks API:
- */
-async function getTimerTaskmap(){
-
-  timerTaskMap_.clear(); //Clear out any existing map entries.
-
-  try{
-    const response = await fetch("http://localhost:2468/api/v1/tasks/");
-    const timerTasksJson = await response.json();
-
-    timerTasksJson.tasks.forEach((task) => {
-      timerTaskMap_.set(task.project.fullName + "/" + task.fullName, task.id);
-    });
-  } catch (error) {
-    console.error("Error in getTaskMap:", error.message);
-  }    
-}
-
-/**
- * Returns data for looking up component-level status. 
- */
-async function getWbsElements(){
-
-  wbsElements_.clear(); //Clear out any existing data in the array.
-
-  try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/wbsElements");
-    const wbsElementsJson = await response.json();
-
-    wbsElementsJson.wbsElements.forEach((wbsElement) => {
-      wbsElements_.set(wbsElement.project + "/" + wbsElement.wbsElement, wbsElement.activityStatus);
-    });
-  } catch (error) {
-    console.error("Error in getWbsElements:", error.message);
-  } 
+//FIXME - CLASS
+function getTaskDetail(planItem, attributeIndex, defaultReturnValue){
+  if(taskDetails_.has(planItem)){
+    return taskDetails_.get(planItem)[attributeIndex];
+  } else{
+    return defaultReturnValue;
+  }
 }
 
 async function getLabels(){
@@ -346,11 +356,11 @@ async function getLabels(){
 
         var thisValue = customColumn.value;
 
-        if(labels_.has(customColumn.planItemId)){
-          var oldValue = labels_.get(customColumn.planItemId);
-          labels_.set(customColumn.planItemId, oldValue + ";" + thisValue);
+        if(labels_.has(customColumn.planItem)){
+          var oldValue = labels_.get(customColumn.planItem);
+          labels_.set(customColumn.planItem, oldValue + ";" + thisValue);
         } else{
-          labels_.set(customColumn.planItemId, thisValue);
+          labels_.set(customColumn.planItem, thisValue);
         }
       }
     });
@@ -370,7 +380,7 @@ async function getNotes(){
 
     notesJson.notes.forEach((note) => {
 
-      notes_.set(note.planItemId, note.note);      
+      notes_.set(note.planItem, note.note);      
 
     });
   } catch (error) {
@@ -440,12 +450,12 @@ function getWbsElementStatus(wbsElementPath){
 
 async function btn_Click(taskPath){
   
-  taskId = timerTaskMap_.get(taskPath); //Lookup from PlanItem path.
+  taskId = tasksV2_.get(taskPath)[0]; //Lookup from PlanItem path.
 
-  if(timerTaskMap_.has(taskPath)){
+  if(tasksV2_.has(taskPath)){
     setTimer(taskId, true);
   }else{
-    console.error("Key missing from timerTaskMap_:" + taskId);
+    console.error("Key missing from tasksV2_:" + taskId);
   }
 }
 
@@ -465,6 +475,7 @@ function initCheckboxes(){
   document.getElementById("cbShowCompleted").checked = false;
   document.getElementById("cbShowTodo").checked = false;
   document.getElementById("cbShowWip").checked = true;
+  document.getElementById("cbShowOther").checked = false;
 
   //Columns:
   document.getElementById("cbShowDates").checked = false;
@@ -477,6 +488,7 @@ function initCheckboxes(){
  *  - COMPLETED
  *  - TODO
  *  - WIP
+ *  - OTHER
  */
 function toggleTaskStatus(){
 
@@ -497,10 +509,14 @@ function toggleTaskStatus(){
 
   if(document.getElementById("cbShowWip").checked){
     taskStatus = taskStatus + sep + "WIP";
+    sep = "|";    
   }  
 
-  timerTable.column(COL_IX_ACTIVITY_STATUS).search(taskStatus, true).draw();
+  if(document.getElementById("cbShowOther").checked){
+    taskStatus = taskStatus + sep + "OTHER";
+  }    
 
+  timerTable.column(COL_IX_ACTIVITY_STATUS).search(taskStatus, true).draw();
 }
 
 /*
