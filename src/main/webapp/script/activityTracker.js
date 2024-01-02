@@ -15,11 +15,6 @@ Contains timer status as retrieved from the personal data timer API.
 var timerJson_;
 
 /*
-An array of wbselements returned from the jsonViews API. Provides access to component status (completed/wip/todo).
-*/
-var wbsElements_ = new Map();
-
-/*
 An array of labels returned from jsonViews API. Provides access to labels that can be displayed on tasklist. 
 */
 var labels_ = new Map();
@@ -35,7 +30,7 @@ plan/actual/replan/forecast dates, custom cols, milestones etc.
 */
 const taskDetails_ = new Map();
 
-const tasksV2_ = new Map();
+const timerTableTasks_ = new Map();
 
 const directHoursRoot_ = "/DT/";
 const overheadRoot_    = "/OH/";
@@ -85,7 +80,7 @@ async function initTaskListTable(){
   await getLabels();
   await getNotes();
   await getTaskDetails();
-  await getTaskListUsingTimer();
+  await getTimerTableTasks();
   await getcurrentTaskInfo();
 
   /**
@@ -110,7 +105,7 @@ async function initTaskListTable(){
     "autoWidth": false,
     fixedColumns: { left: 2 },
     scrollX: true,
-    data: Array.from(tasksV2_.values()),
+    data: Array.from(timerTableTasks_.values()),
     "initComplete": function(settings, json) {
       //Hide spinner when table load completed:
       document.getElementById("pageLoader").style.display = "none";
@@ -211,6 +206,21 @@ async function initTaskListTable(){
 
 }
 
+class TaskDetails{
+  constructor(task){
+    this.planItem             = task.planItem;
+    this.planTimeHours        = task.planTimeHours.toFixed(2);
+    this.actualTimeHours      = task.actualTimeHours.toFixed(2); 
+    this.activityStatus       = task.activityStatus;
+    this.planDate             = getNullableDateValue(task, 'planDate');
+    this.replanDate           = getNullableDateValue(task, 'replanDate');
+    this.forecastDate         = getNullableDateValue(task, 'forecastDate');
+    this.actualStartDate      = getNullableDateValue(task, 'actualStartDate');
+    this.actualCompletionDate = getNullableDateValue(task, 'actualCompletionDate');
+    this.planItem             = getLabel(task.planItem);
+  }
+}
+
 /**
  * Returns data for the tasklist, using the jsonviews API:
  */
@@ -226,22 +236,10 @@ async function getTaskDetails(){
     const taskListJson = await response.json();
 
     taskListJson.tasks.forEach((task) => {
-
-      //TODO - TaskDetails class.
       taskDetails_.set(
         task.planItem, 
-        [
-        task.planTimeHours.toFixed(2), 
-        task.actualTimeHours.toFixed(2), 
-        task.activityStatus,
-        getNullableDateValue(task, 'planDate'),
-        getNullableDateValue(task, 'replanDate'),
-        getNullableDateValue(task, 'forecastDate'),
-        getNullableDateValue(task, 'actualStartDate'),
-        getNullableDateValue(task, 'actualCompletionDate'),
-        getLabel(task.planItem),
-        task.planItem
-        ]);
+        new TaskDetails(task)
+        );
       
     });
     console.log("**** taskDetailsSize:" + taskDetails_.size);
@@ -250,9 +248,9 @@ async function getTaskDetails(){
   } 
 }
 
-async function getTaskListUsingTimer(){
+async function getTimerTableTasks(){
 
-  tasksV2_.clear(); //Clear out any existing map entries.
+  timerTableTasks_.clear(); //Clear out any existing map entries.
 
   try{
     const response = await fetch("http://localhost:2468/api/v1/tasks/");
@@ -265,27 +263,49 @@ async function getTaskListUsingTimer(){
       let noteText = getNote(planItem);
       let elipsis = (noteText != "") ? "..." : "";      
 
-      if(planItem.startsWith(directHoursRoot_) || planItem.startsWith(overheadRoot_) || planItem.startsWith(offWorkRoot_)){
-        tasksV2_.set(
-          planItem,
-          [
-          task.id, 
-          planItem,
-          elipsis,
-          getTaskDetail(planItem, 0, ""),
-          getTaskDetail(planItem, 1, ""),
-          getTaskDetail(planItem, 2, "OTHER"), //IsComplete - used for "overhead" or other non-dt tasks.
-          getTaskDetail(planItem, 3, ""),
-          getTaskDetail(planItem, 4, ""),
-          getTaskDetail(planItem, 5, ""),
-          getTaskDetail(planItem, 6, ""),
-          getTaskDetail(planItem, 7, ""),
-          getTaskDetail(planItem, 8, ""),
-          noteText
-        ]);
-        //console.log("** INCLUDE:" + planItem);
+      if(planItem.startsWith(directHoursRoot_) || planItem.startsWith(overheadRoot_) || planItem.startsWith(offWorkRoot_) ){
+
+        if(taskDetails_.has(planItem)){
+
+          var td =  taskDetails_.get(planItem);
+
+          timerTableTasks_.set(planItem, [
+            task.id, 
+            planItem,
+            elipsis,
+            td.planTimeHours,
+            td.actualTimeHours,
+            td.activityStatus,
+            td.planDate,
+            td.replanDate,
+            td.forecastDate,
+            td.actualStartDate,
+            td.actualCompletionDate,
+            getLabel(planItem),
+            noteText
+          ]);
+        } else{
+
+          //TODO - GET ACTUAL EFFORT FROM HERE....
+
+          timerTableTasks_.set(planItem, [
+            task.id, 
+            planItem,
+            "",
+            "",
+            "",
+            "OTHER",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]);
+        }
       }else{
-        //console.log("** EXCLUDE:" + planItem);
+        console.log("** EXCLUDE:" + planItem);
       }
     });
   } catch (error) {
@@ -333,15 +353,6 @@ function getNote(planItem){
   }
 }
 
-//FIXME - CLASS
-function getTaskDetail(planItem, attributeIndex, defaultReturnValue){
-  if(taskDetails_.has(planItem)){
-    return taskDetails_.get(planItem)[attributeIndex];
-  } else{
-    return defaultReturnValue;
-  }
-}
-
 async function getLabels(){
 
   labels_.clear(); //Clear out any existing data in the array.
@@ -368,7 +379,6 @@ async function getLabels(){
     console.error("Error in getLabels:", error.message);
   } 
 }
-
 
 async function getNotes(){
 
@@ -438,21 +448,11 @@ function setTimer(activeTaskId, timing) {
    
 }
 
-function getWbsElementStatus(wbsElementPath){
-  if(wbsElements_.has(wbsElementPath)){
-    const wbsElementStatus = wbsElements_.get(wbsElementPath);  
-    return wbsElementStatus;    
-  }else{
-    console.error("Key missing from wbsElements_:" + wbsElementPath);
-  } 
-
-}
-
 async function btn_Click(taskPath){
   
-  taskId = tasksV2_.get(taskPath)[0]; //Lookup from PlanItem path.
+  taskId = timerTableTasks_.get(taskPath)[0]; //Lookup from PlanItem path.
 
-  if(tasksV2_.has(taskPath)){
+  if(timerTableTasks_.has(taskPath)){
     setTimer(taskId, true);
   }else{
     console.error("Key missing from tasksV2_:" + taskId);
