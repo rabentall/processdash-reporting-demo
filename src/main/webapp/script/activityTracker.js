@@ -1,13 +1,7 @@
 //
 //
-// Populates map of task IDs + task paths in personal dashboard
-//
-//FIXME - Duplicate code
-//FIXME - Overhead table
-//FIXME - Table width.
 //FIXME - Timeouts
 //TODO - WBSELement notes? how?
-
 
 /*
 Contains timer status as retrieved from the personal data timer API.
@@ -31,10 +25,6 @@ plan/actual/replan/forecast dates, custom cols, milestones etc.
 const taskDetails_ = new Map();
 
 const timerTableTasks_ = new Map();
-
-const directHoursRoot_ = "/DT/";
-const overheadRoot_    = "/OH/";
-const offWorkRoot_     = "/EXT/";
 
 /*
 An array of key-value pairs used to display current task status.
@@ -70,6 +60,12 @@ const ROW_IX_ACTUAL_HOURS = 2;
   Initialises all data needed for the page, then renders the tables.
 */
 async function initTaskListTable(){
+
+  console.log("*** Direct hours root:     " + DIRECT_HOURS_ROOT);  
+  console.log("*** Overhead hours root:   " + OVERHEAD_HOURS_ROOT);  
+  console.log("*** Off work root:         " + OFF_WORK_ROOT);   
+  console.log("*** Default overhead task: " + DEFAULT_OVERHEAD_TASK);
+  console.log("*** Default offwork task:  " + DEFAULT_OFFWORK_TASK);
 
   //Initialise checkboxes:
   initCheckboxes();
@@ -202,8 +198,7 @@ async function initTaskListTable(){
   setInterval(updateTimerStatus, 100);
 
   //TODO - set up a polling loop for periodically exporting data in-memory databases
-  //TODO - root paths for overhead and direct time tasks.
-
+  
 }
 
 class TaskDetails{
@@ -263,7 +258,7 @@ async function getTimerTableTasks(){
       let noteText = getNote(planItem);
       let elipsis = (noteText != "") ? "..." : "";      
 
-      if(planItem.startsWith(directHoursRoot_) || planItem.startsWith(overheadRoot_) || planItem.startsWith(offWorkRoot_) ){
+      if(planItem.startsWith(DIRECT_HOURS_ROOT) || planItem.startsWith(OVERHEAD_HOURS_ROOT) || planItem.startsWith(OFF_WORK_ROOT) ){
 
         if(taskDetails_.has(planItem)){
 
@@ -286,8 +281,7 @@ async function getTimerTableTasks(){
           ]);
         } else{
 
-          //TODO - GET ACTUAL EFFORT FROM HERE....
-
+          //TODO - INCLUDE ACTUAL EFFORT FOR TIMER TASKS?
           timerTableTasks_.set(planItem, [
             task.id, 
             planItem,
@@ -421,6 +415,7 @@ async function updateTimerStatus(){
     var currentTaskPathCell = currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).node();
     $(currentTaskPathCell).addClass('currentTask');
 
+    //TODO - CLEANUP
     if(timerJson_.timer.timing){
       currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).data(timerTaskPath);
     }else{
@@ -449,13 +444,12 @@ function setTimer(activeTaskId, timing) {
 }
 
 async function btn_Click(taskPath){
-  
-  taskId = timerTableTasks_.get(taskPath)[0]; //Lookup from PlanItem path.
 
   if(timerTableTasks_.has(taskPath)){
+    taskId = timerTableTasks_.get(taskPath)[0]; //Lookup from PlanItem path.    
     setTimer(taskId, true);
   }else{
-    console.error("Key missing from tasksV2_:" + taskId);
+    console.error("Key missing from timerTableTasks_:" + taskPath);
   }
 }
 

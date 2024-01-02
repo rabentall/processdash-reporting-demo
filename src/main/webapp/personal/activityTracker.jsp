@@ -15,6 +15,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
 
+<script src="./../script/config.js" ></script>
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
@@ -31,7 +32,6 @@ $(document).ready(() =>
 {
   initTaskListTable();
 });
-
 </script>
 
 <body onkeyup="shortcutEventHandler(event);">
@@ -45,9 +45,9 @@ $(document).ready(() =>
 
   <!-- FIXME - 1 - what buttons? 2 - defaults + paths? 3 - styles -->
   <div id="overheadTasks" class="overheadTasks" >
-    <button type="button" onclick="btn_Click('/OH/Admin')">Admin</button>
+    <button type="button" onclick="btn_Click(DEFAULT_OVERHEAD_TASK)">Admin</button>
     <button type="button" onclick="btn_Pause()">Pause</button>       
-    <button type="button" onclick="btn_Click('/EXT/Off work')">Off work</button>
+    <button type="button" onclick="btn_Click(DEFAULT_OFFWORK_TASK)">Off work</button>
   </div>
 
   <h4>Available tasks</h4>
