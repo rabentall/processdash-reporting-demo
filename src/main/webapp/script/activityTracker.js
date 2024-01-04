@@ -62,6 +62,16 @@ const ROW_IX_CURRENT_TASK = 0;
 const ROW_IX_ESTIMATED_HOURS = 1;
 const ROW_IX_ACTUAL_HOURS = 2;
 
+const PROTOCOL = window.location.protocol;
+const HOST     = window.location.host;
+const PLUGIN   = "pdash-reporting-rbentall-1.0";
+const API      = "api/v1";
+
+const URL_BASE      = PROTOCOL + "//" + HOST;
+const JSONVIEWS_URL = URL_BASE + "//" + PLUGIN + "/jsonViews";
+const TIMER_URL     = URL_BASE + "/" + API + "/timer/";
+const TASKS_URL     = URL_BASE + "/" + API + "/tasks/";
+
 /*
   Initialises all data needed for the page, then renders the tables.
 */
@@ -222,13 +232,10 @@ class TaskDetails{
  */
 async function getTaskDetails(){
 
-  taskDetails_.clear(); //Clear out any existing data in the array.
-
-  //TODO - ROOT OF "THIS" webservice.
-  //TODO - constant for url.
+  taskDetails_.clear();
 
   try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/tasks");
+    const response = await fetch(JSONVIEWS_URL + "/tasks");
     const taskListJson = await response.json();
 
     taskListJson.tasks.forEach((task) => {
@@ -238,7 +245,7 @@ async function getTaskDetails(){
         );
       
     });
-    console.log("**** taskDetailsSize:" + taskDetails_.size);
+    console.log("** taskDetailsSize:" + taskDetails_.size);
   } catch (error) {
     console.error("Error in getTaskDetails:", error.message);
   } 
@@ -246,10 +253,10 @@ async function getTaskDetails(){
 
 async function getTimerTableTasks(){
 
-  timerTableTasks_.clear(); //Clear out any existing map entries.
+  timerTableTasks_.clear();
 
   try{
-    const response = await fetch("http://localhost:2468/api/v1/tasks/");
+    const response = await fetch(TASKS_URL);
     const timerTasksJson = await response.json();
 
     timerTasksJson.tasks.forEach((task) => {
@@ -300,7 +307,7 @@ async function getTimerTableTasks(){
           ]);
         }
       }else{
-      //  console.log("** EXCLUDE:" + planItem);
+        console.log("** EXCLUDE:" + planItem);
       }
     });
   } catch (error) {
@@ -350,10 +357,10 @@ function getNote(planItem){
 
 async function getLabels(){
 
-  labels_.clear(); //Clear out any existing data in the array.
+  labels_.clear();
 
   try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/customColumns");
+    const response = await fetch(JSONVIEWS_URL + "/customColumns");
     const labelsJson = await response.json();
 
     labelsJson.customColumns.forEach((customColumn) => {
@@ -377,10 +384,10 @@ async function getLabels(){
 
 async function getNotes(){
 
-  notes_.clear(); //Clear out any existing data in the array.
+  notes_.clear();
 
   try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/notes");
+    const response = await fetch(JSONVIEWS_URL + "/notes");
     const notesJson = await response.json();
 
     notesJson.notes.forEach((note) => {
@@ -395,7 +402,7 @@ async function getNotes(){
 
 async function getDashboardSettings(){
   try{
-    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/dashboardSettings");
+    const response = await fetch(JSONVIEWS_URL + "/dashboardSettings");
     const json = await response.json();
     const settingsKeys = Object.keys(json.dashboardSettings);
 
@@ -415,7 +422,7 @@ async function getDashboardSettings(){
 function getSetting(obj, key){
   if(obj.hasOwnProperty('timer.overheadHoursRoot')){
     const setting = obj[key];
-    console.log("Setting " + key + ":" + setting);
+    console.log(key + " = " + setting);
     return setting;
   }else{
     console.log("Missing setting " + key);
@@ -426,7 +433,7 @@ function getSetting(obj, key){
 async function updateTimerStatus(){
 
   try{
-    const response = await fetch("http://localhost:2468/api/v1/timer/");
+    const response = await fetch(TIMER_URL);
     timerJson_ = await response.json();
 
     let activeTask = timerJson_.timer.activeTask;
@@ -466,7 +473,7 @@ function setTimer(activeTaskId, timing) {
       body:  'activeTaskId=' + activeTaskId + '&timing=' + timing
   };
 
-  fetch('http://localhost:2468/api/v1/timer/', requestOptions)
+  fetch(TIMER_URL, requestOptions)
       .then(response => response)
       .catch(error => {
           console.error('There was an error!', error);
