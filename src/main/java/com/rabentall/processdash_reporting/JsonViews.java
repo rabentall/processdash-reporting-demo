@@ -7,20 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
 import java.util.Set;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 import net.sourceforge.processdash.api.PDashContext;
 
 import com.google.gson.Gson;
-
-/*
- * TODO - INIT.
- * 
- */
 
 public class JsonViews extends HttpServlet {
 
@@ -42,7 +35,6 @@ public class JsonViews extends HttpServlet {
 
         resp.getOutputStream().print(loader.get(ctx, pathInfo));
     }
-
 }
 
 class DataLoader{
@@ -55,16 +47,17 @@ class DataLoader{
 
   DataLoader(Gson gson){
     gson_ = gson;
-    dashData.put("/customColumns",  new CustomColumns());
-    dashData.put("/defects",        new Defects());
-    dashData.put("/dependencies",   new Dependencies());
-    dashData.put("/milestones",     new Milestones());
-    dashData.put("/notes",          new Notes());
-    dashData.put("/processPhases",  new ProcessPhases());
-    dashData.put("/sizeMetrics",    new SizeMetrics());  
-    dashData.put("/tasks",          new Tasks());
-    dashData.put("/timeLog",        new TimeLog());        
-    dashData.put("/wbsElements",    new WbsElements());
+    dashData.put("/customColumns",     new CustomColumns());
+    dashData.put("/defects",           new Defects());
+    dashData.put("/dependencies",      new Dependencies());
+    dashData.put("/milestones",        new Milestones());
+    dashData.put("/notes",             new Notes());
+    dashData.put("/processPhases",     new ProcessPhases());
+    dashData.put("/sizeMetrics",       new SizeMetrics());  
+    dashData.put("/tasks",             new Tasks());
+    dashData.put("/timeLog",           new TimeLog());        
+    dashData.put("/wbsElements",       new WbsElements());
+    dashData.put("/dashboardSettings", new DashboardSettings());
   }
   
   String get(PDashContext ctx, String pathInfo){

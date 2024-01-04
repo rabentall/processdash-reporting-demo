@@ -3,6 +3,12 @@
 //FIXME - Timeouts
 //TODO - WBSELement notes? how?
 
+var directHoursRoot_;
+var overheadHoursRoot_;
+var offworkRook_;
+var defaultOverheadTask_;
+var defaultOffworkTask_;
+
 /*
 Contains timer status as retrieved from the personal data timer API.
 */
@@ -61,18 +67,13 @@ const ROW_IX_ACTUAL_HOURS = 2;
 */
 async function initTaskListTable(){
 
-  console.log("*** Direct hours root:     " + DIRECT_HOURS_ROOT);  
-  console.log("*** Overhead hours root:   " + OVERHEAD_HOURS_ROOT);  
-  console.log("*** Off work root:         " + OFF_WORK_ROOT);   
-  console.log("*** Default overhead task: " + DEFAULT_OVERHEAD_TASK);
-  console.log("*** Default offwork task:  " + DEFAULT_OFFWORK_TASK);
-
   //Initialise checkboxes:
   initCheckboxes();
 
   /**
    * Initialise data arrays from webservices:
    */
+  await getDashboardSettings();
   await getLabels();
   await getNotes();
   await getTaskDetails();
@@ -258,7 +259,7 @@ async function getTimerTableTasks(){
       let noteText = getNote(planItem);
       let elipsis = (noteText != "") ? "..." : "";      
 
-      if(planItem.startsWith(DIRECT_HOURS_ROOT) || planItem.startsWith(OVERHEAD_HOURS_ROOT) || planItem.startsWith(OFF_WORK_ROOT) ){
+      if(planItem.startsWith(directHoursRoot_) || planItem.startsWith(overheadHoursRoot_) || planItem.startsWith(offworkRook_) ){
 
         if(taskDetails_.has(planItem)){
 
@@ -299,7 +300,7 @@ async function getTimerTableTasks(){
           ]);
         }
       }else{
-        console.log("** EXCLUDE:" + planItem);
+      //  console.log("** EXCLUDE:" + planItem);
       }
     });
   } catch (error) {
@@ -392,6 +393,36 @@ async function getNotes(){
   } 
 }
 
+async function getDashboardSettings(){
+  try{
+    const response = await fetch("http://localhost:2468//pdash-reporting-rbentall-1.0/jsonViews/dashboardSettings");
+    const json = await response.json();
+    const settingsKeys = Object.keys(json.dashboardSettings);
+
+    console.log("**** DashboardSettingsKeys: " + settingsKeys);
+
+    directHoursRoot_     = getSetting(json.dashboardSettings, "timer.directHoursRoot");
+    overheadHoursRoot_   = getSetting(json.dashboardSettings, "timer.overheadHoursRoot");
+    offworkRook_         = getSetting(json.dashboardSettings, "timer.offworkRoot");
+    defaultOverheadTask_ = getSetting(json.dashboardSettings, "timer.defaultOverheadTask");
+    defaultOffworkTask_  = getSetting(json.dashboardSettings, "timer.defaultOffworkTask");
+    
+  } catch (error) {
+    console.error("Error in getDashboardSettings:", error.message);
+  } 
+}
+
+function getSetting(obj, key){
+  if(obj.hasOwnProperty('timer.overheadHoursRoot')){
+    const setting = obj[key];
+    console.log("Setting " + key + ":" + setting);
+    return setting;
+  }else{
+    console.log("Missing setting " + key);
+  }  
+
+}
+
 async function updateTimerStatus(){
 
   try{
@@ -441,6 +472,14 @@ function setTimer(activeTaskId, timing) {
           console.error('There was an error!', error);
       });
    
+}
+
+async function btn_ClickOffWork(){
+  btn_Click(defaultOffworkTask_);
+}
+
+async function btn_ClickOverhead(){
+  btn_Click(defaultOverheadTask_);
 }
 
 async function btn_Click(taskPath){
