@@ -15,6 +15,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
 
+<script src="./../script/dataLoader.js" ></script>
 <script src="./../script/activityTracker.js" ></script>
 <link   href="./../style/master.css" rel="stylesheet" />
 
@@ -43,6 +44,7 @@ $(document).ready(() =>
   <table id="currentTaskTable" class=" nowrap cell-border compact " ></table>
 
   <div id="overheadTasks" class="overheadTasks" >
+    <button type="button" onclick="btn_Pause()">Pause</button>
     <button type="button" onclick="btn_ClickOverhead()">Admin</button>
     <button type="button" onclick="btn_ClickOffWork()">Off work</button>
   </div>
