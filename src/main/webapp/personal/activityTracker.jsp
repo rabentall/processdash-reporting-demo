@@ -21,6 +21,21 @@
 
 <style>
 
+.buttonContainer{
+    /*float:left;*/ /* Ensures that two groups of checkboxes display side by side  */
+   /* width: max-content;  Shrink to fit set of boxes. */
+    font-weight: 100;
+    color: rgb(11,65,145); /* BLUE */
+ /*   background-color: rgba(210, 222, 241);*/ /* light grey */
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
+    /* border-style: solid; */
+    /* border-color: rgb(11,65,145); BLUE */
+    /* border-width: 1px; */
+    margin:0px 0px 15px 00px;
+
+  }
+
 </style>
 </head>
 
@@ -39,14 +54,15 @@ $(document).ready(() =>
 <h3  class="h3Content" >Activity Tracker</h3>
 <div class="contentBody">
 
-  <h4>Current task</h4>  
+  <h4>Current task</h4>
 
   <table id="currentTaskTable" class=" nowrap cell-border compact " ></table>
 
-  <div id="overheadTasks" class="overheadTasks" >
-    <button type="button" onclick="btn_Pause()">Pause</button>
-    <button type="button" onclick="btn_ClickOverhead()">Admin</button>
-    <button type="button" onclick="btn_ClickOffWork()">Off work</button>
+  <div id="buttonBar" class="buttonContainer" >
+    <button type="button" onclick="btn_Pause()"         id="buttonPause"    >Pause</button>
+    <button type="button" onclick="btn_MarkComplete()"  id="buttonComplete" >Mark complete</button>
+    <button type="button" onclick="btn_ClickOverhead()" id="buttonAdmin"    >Admin</button>
+    <button type="button" onclick="btn_ClickOffWork()"  id="buttonOffWork"  >Off work</button>
   </div>
 
   <h4>Available tasks</h4>
@@ -59,13 +75,13 @@ $(document).ready(() =>
     <label for="cbShowTodo">Todo:</label>
     <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
     <label for="cbShowWip">WIP:</label>
-    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />  
+    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />
     <label for="cbShowOther">Other:</label>
-    <input type="checkbox" id="cbShowOther" onclick="toggleTaskStatus()" />      
+    <input type="checkbox" id="cbShowOther" onclick="toggleTaskStatus()" />
   </div>
-  <!-- Checkboxes to show/hide columns in task table: -->  
+  <!-- Checkboxes to show/hide columns in task table: -->
   <div   id="showColumnsBox" class="checkBoxFormat">
-    <h4 class="checkBoxTitleFormat">Columns</h4>    
+    <h4 class="checkBoxTitleFormat">Columns</h4>
     <label for="cbShowDates">Dates:</label>
     <input type="checkbox" id="cbShowDates" onclick="toggleColumnStatus()" />
     <label for="cbShowHours">Hours:</label>
