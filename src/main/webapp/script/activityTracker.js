@@ -41,9 +41,21 @@ Row indices for current task table:
 const ROW_IX_CURRENT_TASK = 0;
 const ROW_IX_ESTIMATED_HOURS = 1;
 const ROW_IX_ACTUAL_HOURS = 2;
+const ROW_IX_COMPLETION_DATE = 3;
 
+/*
+  Button text for Pause/Play:
+*/
 const BUTTON_PAUSE_TEXT = "Pause";
 const BUTTON_PLAY_TEXT  = "Play";
+
+/*
+  Button text for mark complete/reopen:
+*/
+
+const BUTTON_MARK_COMPLETE_TEXT = "Mark complete";
+const BUTTON_REOPEN_TEXT        = "Reopen";
+
 /*
   Initialises all data needed for the page, then renders the tables.
 */
@@ -193,6 +205,7 @@ async function getcurrentTaskInfo(){
     currentTaskInfo_.push(["Current task",  "TODO"]);
     currentTaskInfo_.push(["Estimated hrs", "TODO"]);
     currentTaskInfo_.push(["Actual hrs",    "TODO"]);
+    currentTaskInfo_.push(["Completion date", "TODO"]);
 
   } catch (error) {
     console.error("Error in getcurrentTaskInfo:", error.message);
@@ -208,25 +221,35 @@ async function updateTimerStatus(){
     let activeTask = timerJson_.timer.activeTask;
     let timerTaskPath = activeTask.project.fullName + "/" + activeTask.fullName;
 
-    let timerTaskPathLabel = "";
-
+    //Pause status:
+    var pauseLabel = "";
     if(timerJson_.timer.timing){
-      timerTaskPathLabel = timerTaskPath;
       document.getElementById("buttonPause").innerHTML=BUTTON_PAUSE_TEXT;
     }else{
-      timerTaskPathLabel = timerTaskPath + " [PAUSED]";
+      pauseLabel = "[PAUSED]";
       document.getElementById("buttonPause").innerHTML=BUTTON_PLAY_TEXT;
     }
 
-    let estimatedHrs = activeTask.estimatedTime / 60.0;
-    let actualHrs = activeTask.actualTime / 60.0;
+    //completion status:
+    var completionDateLabel = "";
+    if(timerJson_.timer.activeTask.completionDate){
+      document.getElementById("buttonComplete").innerHTML=BUTTON_REOPEN_TEXT;
+      completionDateLabel = "[COMPLETED]";
+    } else {
+      document.getElementById("buttonComplete").innerHTML=BUTTON_MARK_COMPLETE_TEXT;
+    }
+
+    const timerTaskPathLabel = timerTaskPath + " " + pauseLabel + " " + completionDateLabel;
+    const estimatedHrs       = activeTask.estimatedTime / 60.0;
+    const actualHrs          = activeTask.actualTime    / 60.0;
+    const completionDate     = getNullableDateValue(timerJson_.timer.activeTask,"completionDate");
 
     //Update the current task table:
     var currentTaskTable = new DataTable('#currentTaskTable');
     currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).data(timerTaskPathLabel);
-
     currentTaskTable.cell(ROW_IX_ESTIMATED_HOURS, 1).data(estimatedHrs.toFixed(2));
     currentTaskTable.cell(ROW_IX_ACTUAL_HOURS,    1).data(actualHrs.toFixed(2));
+    currentTaskTable.cell(ROW_IX_COMPLETION_DATE, 1).data(completionDate);
 
     //Handles highlighting of current task path contents:
     var currentTaskPathCell = currentTaskTable.cell(ROW_IX_CURRENT_TASK,    1).node();
@@ -284,10 +307,27 @@ async function btn_Pause(){
   }
 }
 
-// TODO - MARK COMPLETE
 async function btn_MarkComplete(){
-  console.log ("Marking complete....");
-  //If you mark complete, then pause it.
+
+  //completion status:
+  var completionDate = "";
+  if(!timerJson_.timer.activeTask.completionDate){
+    completionDate = new Date(Date.now()).toISOString();
+  }
+
+  const requestOptions = {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body:  'completionDate=' + completionDate
+  };
+
+  const completeTasksUrl = TASKS_URL + timerJson_.timer.activeTask.id + "/";
+
+  fetch(completeTasksUrl, requestOptions)
+    .then(response => response)
+    .catch(error => {
+        console.error('There was an error!', error);
+    });
 }
 
 /**
