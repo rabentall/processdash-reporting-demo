@@ -21,20 +21,28 @@
 
 <style>
 
-.buttonContainer{
-    /*float:left;*/ /* Ensures that two groups of checkboxes display side by side  */
-   /* width: max-content;  Shrink to fit set of boxes. */
+  .selectionContainer{
+    width: 450px;
+    margin:0px 0px 15px 00px;
+  }
+
+  .checkBoxFormat{
     font-weight: 100;
     color: rgb(11,65,145); /* BLUE */
- /*   background-color: rgba(210, 222, 241);*/ /* light grey */
+    background-color: rgba(210, 222, 241); /* light grey */
     padding: 5px 5px 5px 5px;
     margin: 0px 0px 0px 0px;
-    /* border-style: solid; */
-    /* border-color: rgb(11,65,145); BLUE */
-    /* border-width: 1px; */
-    margin:0px 0px 15px 00px;
-
   }
+
+  .buttonContainer{
+    font-weight: 100;
+    color: rgb(11,65,145); /* BLUE */
+    padding: 5px 5px 5px 5px;
+    margin: 0px 0px 0px 0px;
+    margin:0px 0px 15px 00px;
+  }
+
+
 
 </style>
 </head>
@@ -68,26 +76,42 @@ $(document).ready(() =>
   <h4>Available tasks</h4>
 
   <!-- Checkboxes to show/hide rows in task table: -->
-  <div id="showCompletedTasksBox" class="checkBoxFormat">
-    <h4 class="checkBoxTitleFormat">Rows</h4>
-    <label for="cbShowCompleted">Completed:</label>
-    <input type="checkbox" id="cbShowCompleted" onclick="toggleTaskStatus()" />
-    <label for="cbShowTodo">Todo:</label>
-    <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
-    <label for="cbShowWip">WIP:</label>
-    <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />
-    <label for="cbShowOther">Other:</label>
-    <input type="checkbox" id="cbShowOther" onclick="toggleTaskStatus()" />
-  </div>
-  <!-- Checkboxes to show/hide columns in task table: -->
-  <div   id="showColumnsBox" class="checkBoxFormat">
-    <h4 class="checkBoxTitleFormat">Columns</h4>
-    <label for="cbShowDates">Dates:</label>
-    <input type="checkbox" id="cbShowDates" onclick="toggleColumnStatus()" />
-    <label for="cbShowHours">Hours:</label>
-    <input type="checkbox" id="cbShowHours" onclick="toggleColumnStatus()" />
-    <label for="cbShowLabels">Labels:</label>
-    <input type="checkbox" id="cbShowLabels" onclick="toggleColumnStatus()" />
+  <div class="selectionContainer">
+    <div id="horizonBox" class="checkBoxFormat">
+      <fieldset>
+        <legend>Horizon</legend>
+        <label for="cbHorizonLTE14">2 Weeks</label>
+        <input type="checkbox" id="cbHorizonLTE14" onclick="toggleHorizon()" />
+        <label for="cbHorizonLTE35">2 - 5 Weeks</label>
+        <input type="checkbox" id="cbHorizonLTE35" onclick="toggleHorizon()" />
+        <label for="cbHorizonGT35">&GT; 5 Weeks</label>
+        <input type="checkbox" id="cbHorizonGT35"  onclick="toggleHorizon()" />
+      </fieldset>
+    </div>
+    <div id="showCompletedTasksBox" class="checkBoxFormat">
+      <fieldset >
+        <legend>Status</legend>
+        <label for="cbShowCompleted">Completed:</label>
+        <input type="checkbox" id="cbShowCompleted" onclick="toggleTaskStatus()" />
+        <label for="cbShowTodo">Todo:</label>
+        <input type="checkbox" id="cbShowTodo" onclick="toggleTaskStatus()" />
+        <label for="cbShowWip">WIP:</label>
+        <input type="checkbox" id="cbShowWip" onclick="toggleTaskStatus()" />
+        <label for="cbShowOther">Other:</label>
+        <input type="checkbox" id="cbShowOther" onclick="toggleTaskStatus()" />
+      </fieldset>
+    </div>
+    <div   id="showColumnsBox" class="checkBoxFormat">
+      <fieldset>
+        <legend>Columns</legend>
+        <label for="cbShowDates">Dates:</label>
+        <input type="checkbox" id="cbShowDates" onclick="toggleColumnStatus()" />
+        <label for="cbShowHours">Hours:</label>
+        <input type="checkbox" id="cbShowHours" onclick="toggleColumnStatus()" />
+        <label for="cbShowLabels">Labels:</label>
+        <input type="checkbox" id="cbShowLabels" onclick="toggleColumnStatus()" />
+      </fieldset>
+    </div>
   </div>
 
   <table id="timerTable" class="nowrap  hover row-border compact cell-border"  ></table>

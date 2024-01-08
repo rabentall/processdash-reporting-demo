@@ -1,47 +1,47 @@
 html, body {
    height: 100%;
-   margin: 0px;  
-   font-family: Arial;   
-   color: rgb(11,65,145);   
+   margin: 0px;
+   font-family: Arial;
+   color: rgb(11,65,145);
 }
-    
+
 .container {
     height: 100%;
     width: 100%;
-    display: flex;       
+    display: flex;
 }
 
 .indexContent {
-    overflow-y: auto;    
+    overflow-y: auto;
 }
 
 .index {
-    max-width: 600px; 
-    min-width: 100px;     
+    max-width: 600px;
+    min-width: 100px;
     width: 200px;
-    background-color: rgba(210, 222, 241); /* light grey */    
-    height: 100%;    
+    background-color: rgba(210, 222, 241); /* light grey */
+    height: 100%;
     overflow-x: hidden;
     overflow-y: hidden;
-    resize: horizontal;    
+    resize: horizontal;
 }
 
 .indexAnchor {
     color: rgb(11,65,145);
-    margin-left: 30px;      
+    margin-left: 30px;
 }
 
 .content
 {
     min-width:200px;
     flex:3;
-    overflow: auto;  
+    overflow: auto;
 }
 
 h2
 {
     font-weight: 100;
-    color: rgb(197,20,42); /* RED */    
+    color: rgb(197,20,42); /* RED */
 }
 
 h3
@@ -66,7 +66,7 @@ h3
 {
     font-weight: 100;
     color: rgb(11,65,145); /* BLUE */
-    background-color: rgba(210, 222, 241); /* light grey */        
+    background-color: rgba(210, 222, 241); /* light grey */
     padding: 5px 5px 5px 5px;
     margin: 0px 0px 10px 0px;
 
@@ -78,13 +78,13 @@ h3
     width:1000px;
     margin: auto;
     margin-left:15px;
-    margin-right:15px;    
+    margin-right:15px;
 }
 
 h4
 {
     font-weight: bold;
-    color: rgb(11,65,145); /* BLUE */ 
+    color: rgb(11,65,145); /* BLUE */
     padding:  5px 5px 5px 0px;
     text-align: left;
 }
@@ -93,43 +93,30 @@ h4
 .currentTask
 {
     font-weight: bold;
-    color: rgb(197,20,42); /* RED */  
+    color: rgb(197,20,42); /* RED */
     text-align: left;
-      
+
 }
 
 /*
 Use to style checkboxes that show/hide columns and rows:
 */
 
-.checkBoxFormat{
-    float:left; /* Ensures that two groups of checkboxes display side by side  */
-    width: max-content; /* Shrink to fit set of boxes. */
-    font-weight: 100;
-    color: rgb(11,65,145); /* BLUE */
-    background-color: rgba(210, 222, 241); /* light grey */        
-    padding: 5px 5px 5px 5px;
-    margin: 0px 0px 0px 0px;
-    /* border-style: solid; */
-    /* border-color: rgb(11,65,145); BLUE */
-    /* border-width: 1px; */
-    margin:0px 0px 15px 00px;
-    
-  }
 
-  .checkBoxTitleFormat{
-    padding:0px 0px 0px 0px;    
-    margin: 0px 0px 0px 0px;  
-    text-align: left;  
-    font-style: italic;    
-  }
+
+  /* .checkBoxTitleFormat{
+    padding:0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    text-align: left;
+    font-style: italic;
+  } */
 
   #notesPanel{
     position: fixed; /* Stays fixed relative to viewport*/
     border-style: solid;
     border-color: rgb(11,65,145); /*BLUE */
     border-width: 1px;
-    background-color: rgba(210, 222, 241); /* light grey */   
+    background-color: rgba(210, 222, 241); /* light grey */
     margin:0px 0px 15px 00px;
     visibility: hidden;
     left: 200px;
@@ -141,7 +128,7 @@ Use to style checkboxes that show/hide columns and rows:
   }
 
 
-/* 
+/*
 Use to style timer tables
 */
 
@@ -155,33 +142,33 @@ table {
 #timerTable_Wrapper{
     width:1000px;
   }
-  
+
   #timerTable{
     width:1000px;
   }
 
 /* Vertical spacing of "length" dropdown */
 #timerTable_length{
-    margin:0px 0px 15px 0px;  
+    margin:0px 0px 15px 0px;
   }
-  
+
   /* Vertical spacing of "filter" dropdown */
   #timerTable_filter{
-    margin:0px 0px 15px 0px; 
+    margin:0px 0px 15px 0px;
   }
-  
+
   #currentTaskTable_Wrapper{
     float:left;
     margin:0px 0px 15px 00px;
     width:1000px;
   }
-  
+
   #currentTaskTable{
       width:1000px;
     }
- 
 
-/* 
+
+/*
 Use to style the loader spinner:
 */
 .loader {
@@ -189,20 +176,20 @@ Use to style the loader spinner:
     margin: auto;
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top:  16px solid rgba(210, 222, 241); /* light grey */        
+    border-top:  16px solid rgba(210, 222, 241); /* light grey */
 
     width: 50px;
     height: 50px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
   }
-  
+
   /* Safari */
   @-webkit-keyframes spin {
     0% { -webkit-transform: rotate(0deg); }
     100% { -webkit-transform: rotate(360deg); }
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

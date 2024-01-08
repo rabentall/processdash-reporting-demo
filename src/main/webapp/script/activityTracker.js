@@ -33,6 +33,7 @@ const COL_IX_START_DATE = 9;
 const COL_IX_END_DATE = 10;
 const COL_IX_LABELS = 11;
 const COL_IX_NOTES_CONTENT = 12;
+const COL_IX_REPLAN_BUCKET = 13;
 
 /*
 Row indices for current task table:
@@ -91,7 +92,8 @@ async function initTaskListTable(){
       { title: 'Start',      visible: false},
       { title: 'End',        visible: false},
       { title: 'Labels',     visible: false},
-      { title: 'Notes',      visible: false}
+      { title: 'Notes',      visible: false},
+      { title: 'ReplanBucket', visible: true}
     ],
     "autoWidth": false,
     fixedColumns: { left: 2 },
@@ -120,6 +122,7 @@ async function initTaskListTable(){
   //Initialise table row/column visibility:
   toggleTaskStatus();
   toggleColumnStatus();
+  toggleHorizon();
 
   //Handle change of cursor when we have notes to view or a timer path to click:
   timerTable.on('mouseenter', 'tbody td', function(){
@@ -192,7 +195,8 @@ async function initTaskListTable(){
   //Set up a polling loop for the current task at 100ms:
   setInterval(updateTimerStatus, 100);
 
-  //TODO - set up a polling loop for periodically exporting data in-memory databases
+  //Set up a polling loop for periodic export at 10s:
+  setInterval(exportData, 10000);
 
 }
 
@@ -209,6 +213,22 @@ async function getcurrentTaskInfo(){
 
   } catch (error) {
     console.error("Error in getcurrentTaskInfo:", error.message);
+  }
+}
+
+/**
+ *
+ * Exports from single project (main concern is direct hours).
+ * TODO - Iterate through all projects.
+ *
+ */
+
+async function exportData(){
+  const EXPORT_URL    = URL_BASE + directTimeExportPath_ + "/control/exportNow.class?run";
+  try{
+    const response = await fetch(EXPORT_URL);
+  } catch (error) {
+    console.error("Error in exportData:", error.message);
   }
 }
 
@@ -335,6 +355,9 @@ async function btn_MarkComplete(){
  */
 function initCheckboxes(){
 
+  //Horizon:
+  document.getElementById("cbHorizonLTE14").checked = true;
+
   //Rows:
   document.getElementById("cbShowCompleted").checked = false;
   document.getElementById("cbShowTodo").checked = false;
@@ -344,7 +367,7 @@ function initCheckboxes(){
   //Columns:
   document.getElementById("cbShowDates").checked = false;
   document.getElementById("cbShowHours").checked = true;
-  document.getElementById("cbShowLabels").checked = true;
+  document.getElementById("cbShowLabels").checked = false;
 }
 
 /**
@@ -405,6 +428,30 @@ function toggleColumnStatus(){
   timerTable.column(COL_IX_LABELS).visible(labelsVisible);
 
   timerTable.columns.adjust().draw();
+}
+
+function toggleHorizon(){
+
+  var timerTable = new DataTable('#timerTable');
+
+  let horizonValues = "";
+  let sep = "";
+
+  if(document.getElementById("cbHorizonLTE14").checked){
+    horizonValues = horizonValues + "LTE14";
+    sep = "|";
+  }
+
+  if(document.getElementById("cbHorizonLTE35").checked){
+    horizonValues = horizonValues + sep + "LTE35";
+    sep = "|";
+  }
+
+  if(document.getElementById("cbHorizonGT35").checked){
+    horizonValues = horizonValues + sep + "GT35";
+  }
+
+  timerTable.column(COL_IX_REPLAN_BUCKET).search(horizonValues, true).draw();
 }
 
 function hideNotesPanel(){

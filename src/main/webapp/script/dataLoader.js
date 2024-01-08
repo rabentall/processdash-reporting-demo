@@ -13,6 +13,8 @@ var overheadHoursRoot_;
 var offworkRook_;
 var defaultOverheadTask_;
 var defaultOffworkTask_;
+var directTimeExportPath_;
+var showHorizonBuckets_;
 
 /*
 An array of labels returned from jsonViews API. Provides access to labels that can be displayed on tasklist.
@@ -44,6 +46,8 @@ class TaskDetails{
       this.actualStartDate      = getNullableDateValue(task, 'actualStartDate');
       this.actualCompletionDate = getNullableDateValue(task, 'actualCompletionDate');
       this.planItem             = getLabel(task.planItem);
+      this.replanDateNumber     = getNullableDateNumber(task, 'replanDate');
+      this.replanDateBucket     = getDateBucket(this.replanDateNumber);
     }
   }
 
@@ -65,7 +69,6 @@ class TaskDetails{
           );
 
       });
-      console.log("** taskDetailsSize:" + taskDetails_.size);
     } catch (error) {
       console.error("Error in getTaskDetails:", error.message);
     }
@@ -105,7 +108,8 @@ class TaskDetails{
               td.actualStartDate,
               td.actualCompletionDate,
               getLabel(planItem),
-              noteText
+              noteText,
+              td.replanDateBucket
             ]);
           } else{
 
@@ -123,7 +127,8 @@ class TaskDetails{
               "",
               "",
               "",
-              ""
+              "",
+              "GT35"
             ]);
           }
         }else{
@@ -144,6 +149,35 @@ class TaskDetails{
     }
   }
 
+  /*
+    TODO - ELAPSED DAYS - PUT IN BUCKETS:
+     - Overdue
+     - 2 weeks
+     - 4 weeks
+     - 6 weeks.
+  NEEDS CLEANUP
+
+  */
+  function getNullableDateNumber(obj, prop){
+
+    const dayMs = 86400000;
+    const elapsedMs = new Date(getNullableDateValue(obj, prop)).valueOf() - new Date().valueOf();
+
+    return Math.trunc(elapsedMs/dayMs) + 1;
+  }
+
+  function getDateBucket(days){
+    if(days <= 0){
+      return "COMPLETED";
+    } else if(days <= 14){
+      return "LTE14";
+    } else if(days <= 35){
+      return "LTE35";
+    } else {
+      return "GT35";
+    }
+  }
+
   function getLabel(planItem){
     if(labels_.has(planItem)){
       return labels_.get(planItem);
@@ -160,6 +194,7 @@ class TaskDetails{
     }
   }
 
+  //TODO - LABELS....
   async function getLabels(){
 
     labels_.clear();
@@ -213,11 +248,12 @@ class TaskDetails{
 
       console.log("** DashboardSettingsKeys: " + settingsKeys);
 
-      directHoursRoot_     = getSetting(json.dashboardSettings, "timer.directHoursRoot");
-      overheadHoursRoot_   = getSetting(json.dashboardSettings, "timer.overheadHoursRoot");
-      offworkRook_         = getSetting(json.dashboardSettings, "timer.offworkRoot");
-      defaultOverheadTask_ = getSetting(json.dashboardSettings, "timer.defaultOverheadTask");
-      defaultOffworkTask_  = getSetting(json.dashboardSettings, "timer.defaultOffworkTask");
+      directHoursRoot_      = getSetting(json.dashboardSettings, "timer.directHoursRoot");
+      overheadHoursRoot_    = getSetting(json.dashboardSettings, "timer.overheadHoursRoot");
+      offworkRook_          = getSetting(json.dashboardSettings, "timer.offworkRoot");
+      defaultOverheadTask_  = getSetting(json.dashboardSettings, "timer.defaultOverheadTask");
+      defaultOffworkTask_   = getSetting(json.dashboardSettings, "timer.defaultOffworkTask");
+      directTimeExportPath_ = getSetting(json.dashboardSettings, "timer.directTimeExportPath");
 
     } catch (error) {
       console.error("Error in getDashboardSettings:", error.message);
