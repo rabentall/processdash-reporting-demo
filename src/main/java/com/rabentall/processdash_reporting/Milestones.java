@@ -1,7 +1,5 @@
 package com.rabentall.processdash_reporting;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -10,22 +8,19 @@ import net.sourceforge.processdash.api.PDashContext;
 
 class Milestones extends DashData{
 
-  List<Milestone> milestones = new ArrayList<Milestone>();
-  //TODO - make threadsafe
-  //TODO - cache - refresh interval.
   void load(PDashContext ctx) {
-    
+
     String hql =
     " select                                                         " +
     "   dep.predecessor.id,                                          " +
     "   dep.predecessor.project.id,                                  " +
     "   dep.predecessor.wbsElement.id,                               " +
-    "   dep.predecessor.task.id,                                     " +        
+    "   dep.predecessor.task.id,                                     " +
     "   dep.successor.task.name,                                     " +
     "   piaf.value.text,                                              " +
-    "   dep.predecessor.project.name,                   " + 
+    "   dep.predecessor.project.name,                   " +
     "   dep.predecessor.wbsElement.name,                " +
-    "   dep.predecessor.task.name                       " +       
+    "   dep.predecessor.task.name                       " +
     " from PlanItemAttrFact as piaf, PlanItemDependencyFact as dep   " +
     " where                                                          " +
     " dep.successor.id = piaf.planItem.id and                        " +
@@ -33,31 +28,15 @@ class Milestones extends DashData{
     " piaf.planItem.phase.identifier = '*Unspecified*/Milestone' and " +
     " piaf.attribute.name='Milestone Commit Date'                    ";
 
-    // iterate over the data we received from the database
-    for (Object[] row : getRows(ctx, hql)) {
+    load(ctx, hql);
+  }
 
-        Milestone m = new Milestone();
-        m.planItemId   = (Integer)row[0];
-        m.projectId    = (Integer)row[1];
-        m.wbsElementId = (Integer)row[2];
-        m.taskId       = (Integer)row[3];                        
-        m.name         = (String) row[4];
-        m.planItem     = (String) row[6] + "/" + (String) row[7] + "/" + (String) row[8];
-
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            m.commitDate    = (sdf.parse((String)row[5]));
-        }
-        catch(ParseException ex){
-            System.out.println("Error parsing milestone date:" + row[5]);
-        }
-        
-        milestones.add(m);
-    }
+  DashDataElement create(Object[] row) throws ParseException{
+    return new Milestone(row);
   }
 }
 
-class Milestone{
+class Milestone implements DashDataElement{
 
   Integer planItemId;
   Integer projectId;
@@ -66,6 +45,17 @@ class Milestone{
   String  name;
   Date    commitDate;
   String  planItem;
-  
-  Milestone(){} 
+
+  Milestone(Object[] row) throws ParseException{
+    planItemId   = (Integer)row[0];
+    projectId    = (Integer)row[1];
+    wbsElementId = (Integer)row[2];
+    taskId       = (Integer)row[3];
+    name         = (String) row[4];
+    planItem     = (String) row[6] + "/" + (String) row[7] + "/" + (String) row[8];
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    commitDate    = (sdf.parse((String)row[5]));
+  }
+  Milestone(){}
 }

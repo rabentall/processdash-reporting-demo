@@ -10,5 +10,10 @@ public class DashboardSettings extends DashData
 
   @Override
   void load(PDashContext ctx) {
-  }  
+  }
+
+  DashDataElement create(Object[] row){
+    return null;
+  }
+
 }

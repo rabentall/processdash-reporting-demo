@@ -3,6 +3,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+//TODO = HOW TO SIMPLIFY SO WE CAN HANDLE IN SAME WAY AS OTHERS????
+
 import net.sourceforge.processdash.api.PDashContext;
 
 class Tasks extends DashData{
@@ -10,8 +12,8 @@ class Tasks extends DashData{
   List<Task> tasks = new ArrayList<Task>();
 
   void load(PDashContext ctx) {
-    
-    String hql = 
+
+    String hql =
     " select                                         " +
     "     tsf.planItem.id,                           " +
     "     tsf.planItem.project.id,                   " +
@@ -88,7 +90,7 @@ class Tasks extends DashData{
           case "Forecast" : task.forecastDate = (Date)row[13]; break;
 
           default: break;
-      }      
+      }
     }
 
     //Add last element - TODO - MORE ELEGANT SOLUTION
@@ -96,17 +98,22 @@ class Tasks extends DashData{
             tasks.add(task);
     }
   }
+
+  DashDataElement create(Object[] row){
+    return null;
+  }
+
 }
 
 class Task{
   Integer planItemId;
-  Integer projectId;  
+  Integer projectId;
   Integer wbsElementId;
   Integer taskId;
   String  project;
   String  wbsElement;
   String  task;
-  String  phase;    
+  String  phase;
   Double  planTimeHours;
   Double  actualTimeHours;
   Date    actualStartDate;
@@ -117,5 +124,5 @@ class Task{
   String  planItem;
   Boolean isComplete;
   ActivityStatus activityStatus;
-  Task(){} 
+  Task(){}
 }

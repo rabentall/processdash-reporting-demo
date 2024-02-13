@@ -21,6 +21,7 @@ public class JsonViews extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+      try{
         // perform a series of queries to load data
         PDashContext ctx = (PDashContext) req.getAttribute(PDashContext.REQUEST_ATTR);
 
@@ -30,10 +31,19 @@ public class JsonViews extends HttpServlet {
         resp.setHeader("Content-Disposition","inline");
 
         Gson gson = new Gson();
-
         DataLoader loader = new DataLoader(gson);
 
-        resp.getOutputStream().print(loader.get(ctx, pathInfo));
+        //API doesn't use trailing slashes for resource requests.
+        //Identify these and return 404 error.
+        if(pathInfo != null && pathInfo.endsWith("/")){
+          resp.sendError(404);
+        } else {
+          resp.getOutputStream().print(loader.get(ctx, pathInfo));
+        }
+      } catch (Exception ex){
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal error state. Check server logs for more details.");
+        throw new ServletException(ex);
+      }
     }
 }
 
@@ -53,26 +63,25 @@ class DataLoader{
     dashData.put("/milestones",        new Milestones());
     dashData.put("/notes",             new Notes());
     dashData.put("/processPhases",     new ProcessPhases());
-    dashData.put("/sizeMetrics",       new SizeMetrics());  
+    dashData.put("/sizeMetrics",       new SizeMetrics());
     dashData.put("/tasks",             new Tasks());
-    dashData.put("/timeLog",           new TimeLog());        
+    dashData.put("/timeLog",           new TimeLog());
     dashData.put("/wbsElements",       new WbsElements());
     dashData.put("/dashboardSettings", new DashboardSettings());
+
+
+
   }
-  
+
   String get(PDashContext ctx, String pathInfo){
 
-    if(pathInfo != null || values.contains(pathInfo)){      
+    if(pathInfo != null || values.contains(pathInfo)){
       DashData t = dashData.get(pathInfo);
       t.load(ctx);
+
       return gson_.toJson(t);
     } else {
-      return gson_.toJson(values);   
+      return gson_.toJson(values);
     }
   }
 }
-
-
-
-
-
