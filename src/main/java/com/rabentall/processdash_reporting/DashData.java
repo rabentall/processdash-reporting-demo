@@ -15,20 +15,19 @@ abstract class DashData {
     protected String description;
     protected List<DashDataElement> elements = new ArrayList<DashDataElement>();
 
-  //TODO DELETE ME
     protected List<Object[]> getRows(PDashContext ctx, String hql){
-      assert false;
-      return null;
-    }
+
+      List<Object[]> rows = ctx.getQuery().query(hql, PDashQuery.FilterMode.CURRENT);
+
+      logger.info("\n====== HQL query: ======\n" + hql.trim().replaceAll("\\s+", " ") + "\n========================");
+      logger.info("Total rows returned:" + rows.size());
+
+     return rows;
+ }
 
     protected void load(PDashContext ctx, String hql){
 
-        List<Object[]> rows = ctx.getQuery().query(hql, PDashQuery.FilterMode.CURRENT);
-
-        logger.info("\n====== HQL query: ======\n" + hql.trim().replaceAll("\\s+", " ") + "\n========================");
-        logger.info("Total rows returned:" + rows.size());
-
-        for (Object[] row : rows) {
+        for (Object[] row : getRows(ctx, hql)) {
           addElement(row);
         }
 

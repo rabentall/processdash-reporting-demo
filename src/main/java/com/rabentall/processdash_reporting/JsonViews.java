@@ -69,8 +69,6 @@ class DataLoader{
     dashData.put("/wbsElements",       new WbsElements());
     dashData.put("/dashboardSettings", new DashboardSettings());
 
-
-
   }
 
   String get(PDashContext ctx, String pathInfo){
