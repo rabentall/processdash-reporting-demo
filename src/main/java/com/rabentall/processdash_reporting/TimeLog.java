@@ -3,7 +3,7 @@ package com.rabentall.processdash_reporting;
 import java.util.Date;
 import net.sourceforge.processdash.api.PDashContext;
 
-class TimeLog extends DashData{
+class TimeLog extends DashDataList{
 
   void load(PDashContext ctx) {
 

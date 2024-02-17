@@ -6,7 +6,7 @@ import java.text.ParseException;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class Milestones extends DashData{
+class Milestones extends DashDataList{
 
   void load(PDashContext ctx) {
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class Tasks extends DashData{
+class Tasks extends DashDataList{
 
   List<Task> tasks = new ArrayList<Task>();
 

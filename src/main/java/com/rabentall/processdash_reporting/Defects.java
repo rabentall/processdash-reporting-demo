@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class Defects extends DashData{
+class Defects extends DashDataList{
 
   void load(PDashContext ctx) {
 

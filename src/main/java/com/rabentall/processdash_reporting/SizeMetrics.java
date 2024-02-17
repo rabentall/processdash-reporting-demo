@@ -2,7 +2,7 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class SizeMetrics extends DashData{
+class SizeMetrics extends DashDataList{
 
   void load(PDashContext ctx) {
 

@@ -2,7 +2,14 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class Dependencies extends DashData{
+/*
+ * Add in dep.predecessor and dep.successor
+ *
+ * second query to get successor phase identifier.
+ *
+ */
+
+class Dependencies extends DashDataList{
 
   void load(PDashContext ctx) {
 

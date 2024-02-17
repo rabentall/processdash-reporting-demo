@@ -6,9 +6,9 @@ import net.sourceforge.processdash.api.PDashContext;
 import net.sourceforge.processdash.api.PDashQuery;
 import java.util.logging.Logger;
 
-abstract class DashData {
+abstract class DashDataList {
 
-    protected static final Logger logger = Logger.getLogger(DashData.class.getName());
+    protected static final Logger logger = Logger.getLogger(DashDataList.class.getName());
 
     protected int goodRowCount = 0;
     protected int badRowCount  = 0;
@@ -63,7 +63,6 @@ abstract class DashData {
 
     abstract DashDataElement create(Object[] row) throws Exception;
 
-    //TODO - DELETE ME.
     abstract void load(PDashContext ctx);
 
 }

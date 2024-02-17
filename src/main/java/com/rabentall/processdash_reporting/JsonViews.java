@@ -51,9 +51,13 @@ class DataLoader{
 
   Gson gson_;
 
-  Map<String,  DashData> dashData = new HashMap<String, DashData>();
+  Map<String,  DashDataList> dashData = new HashMap<String, DashDataList>();
 
   Set<String> values = dashData.keySet();
+
+  //TODO provide option not to serialise (true/false)
+  //TODO - provide lookups via this route.
+  //TODO - accessing lookups?
 
   DataLoader(Gson gson){
     gson_ = gson;
@@ -74,7 +78,7 @@ class DataLoader{
   String get(PDashContext ctx, String pathInfo){
 
     if(pathInfo != null || values.contains(pathInfo)){
-      DashData t = dashData.get(pathInfo);
+      DashDataList t = dashData.get(pathInfo);
       t.load(ctx);
 
       return gson_.toJson(t);

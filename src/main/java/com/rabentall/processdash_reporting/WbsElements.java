@@ -3,7 +3,7 @@ import java.util.Date;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-class WbsElements extends DashData{
+class WbsElements extends DashDataList{
 
   void load(PDashContext ctx) {
 

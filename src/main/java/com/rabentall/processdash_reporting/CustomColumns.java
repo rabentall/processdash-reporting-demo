@@ -1,17 +1,22 @@
 package com.rabentall.processdash_reporting;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import net.sourceforge.processdash.api.PDashContext;
 
-class CustomColumns extends DashData{
+class CustomColumns extends DashDataList{
 
-  List<CustomColumnRow> customColumns = new ArrayList<CustomColumnRow>();
+/**
+ * key, attribute name, planitem key, planitem, text. Taskname results in rows being lost....
+ * just using planItem results in // at front of path.
+ * Do we really need wbsElement, project name? Think only really keys and planItem.
+ */
+
+//  TaskDetails lookup_ = new TaskDetails();
 
   void load(PDashContext ctx) {
 
     description = "Custom column values.";
+
+    //lookup_.load(ctx);
 
     String hql =
     " select                          " +
@@ -22,8 +27,7 @@ class CustomColumns extends DashData{
     "    piaf.planItem.task.id,       " +
     "    piaf.value.text,             " +
     "    piaf.planItem.project.name,    " +
-    "    piaf.planItem.wbsElement.name, " +
-    "    piaf.planItem.task.name        " +
+    "    piaf.planItem.wbsElement.name " +
     " from                            " +
     "    PlanItemAttrFact as piaf     ";
 
@@ -32,7 +36,11 @@ class CustomColumns extends DashData{
 
 
   DashDataElement create(Object[] row){
-    return new CustomColumnRow(row);
+
+    //Integer taskId = (Integer)row[4];
+    //String  taskName = lookup_.get(taskId);
+
+    return new CustomColumnRow(row, "FIXME");
   }
 
 }
@@ -48,7 +56,7 @@ class CustomColumnRow implements DashDataElement{
   Boolean isWbsElement;
   String  planItem;
 
-  CustomColumnRow(Object[] row){
+  CustomColumnRow(Object[] row, String taskName){
     name         = (String)row[0];
     planItemId   = (Integer)row[1];
     projectId    = (Integer)row[2];
@@ -56,7 +64,7 @@ class CustomColumnRow implements DashDataElement{
     taskId       = (Integer)row[4];
     value        = (String)row[5];
     isWbsElement = (taskId == null);
-    planItem     = (String)row[6] + "/" + (String)row[7] + "/" + (String)row[8];
+    planItem     = (String)row[6] + "/" + (String)row[7] + (taskName == null? "" : "/" + taskName) ;
   }
 
   CustomColumnRow(){}
