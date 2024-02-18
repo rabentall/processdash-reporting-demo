@@ -18,13 +18,13 @@ class ProcessPhases extends DashDataList{
 
   }
 
-  DashDataElement create(Object[] row){
-    return new ProcessPhase(row);
+  void addElement(Object[] row){
+    elements.add(new ProcessPhase(row));
   }
 
 }
 
-class ProcessPhase implements DashDataElement{
+class ProcessPhase extends DashDataElement{
   Object process;
   Integer ordinal;
   Object shortName;

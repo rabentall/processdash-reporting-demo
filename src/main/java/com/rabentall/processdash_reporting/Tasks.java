@@ -99,13 +99,14 @@ class Tasks extends DashDataList{
     }
   }
 
-  DashDataElement create(Object[] row){
-    return null;
+  void addElement(Object[] row) {
+    //FIXME;
   }
+
 
 }
 
-class Task{
+class Task extends DashDataElement{
   Integer planItemId;
   Integer projectId;
   Integer wbsElementId;

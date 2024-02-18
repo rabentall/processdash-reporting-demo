@@ -12,8 +12,7 @@ public class DashboardSettings extends DashDataList
   void load(PDashContext ctx) {
   }
 
-  DashDataElement create(Object[] row){
-    return null;
-  }
+
+  void addElement(Object[] row){}
 
 }

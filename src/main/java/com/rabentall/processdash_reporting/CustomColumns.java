@@ -16,36 +16,31 @@ class CustomColumns extends DashDataList{
 
     description = "Custom column values.";
 
-    //lookup_.load(ctx);
+    //lookup_.load(ctx); - FIXME
 
     String hql =
-    " select                          " +
-    "    piaf.attribute.name,         " +
-    "    piaf.planItem.id,            " +
-    "    piaf.planItem.project.id,    " +
-    "    piaf.planItem.wbsElement.id, " +
-    "    piaf.planItem.task.id,       " +
-    "    piaf.value.text,             " +
-    "    piaf.planItem.project.name,    " +
+    " select                           " +
+    "    piaf.id,                      " +
+    "    piaf.attribute.name,          " +
+    "    piaf.planItem.id,             " +
+    "    piaf.planItem.project.id,     " +
+    "    piaf.planItem.wbsElement.id,  " +
+    "    piaf.planItem.task.id,        " +
+    "    piaf.value.text,              " +
+    "    piaf.planItem.project.name,   " +
     "    piaf.planItem.wbsElement.name " +
-    " from                            " +
-    "    PlanItemAttrFact as piaf     ";
+    " from                             " +
+    "    PlanItemAttrFact as piaf      ";
 
     load(ctx, hql);
   }
 
-
-  DashDataElement create(Object[] row){
-
-    //Integer taskId = (Integer)row[4];
-    //String  taskName = lookup_.get(taskId);
-
-    return new CustomColumnRow(row, "FIXME");
+  void addElement(Object[] row){
+    elements.add(new CustomColumnRow(row, "FIXME"));
   }
-
 }
 
-class CustomColumnRow implements DashDataElement{
+class CustomColumnRow extends DashDataElement{
 
   String  name;
   Integer planItemId;
@@ -57,14 +52,15 @@ class CustomColumnRow implements DashDataElement{
   String  planItem;
 
   CustomColumnRow(Object[] row, String taskName){
-    name         = (String)row[0];
-    planItemId   = (Integer)row[1];
-    projectId    = (Integer)row[2];
-    wbsElementId = (Integer)row[3];
-    taskId       = (Integer)row[4];
-    value        = (String)row[5];
+    id           = (Integer)row[0];
+    name         = (String)row[1];
+    planItemId   = (Integer)row[2];
+    projectId    = (Integer)row[3];
+    wbsElementId = (Integer)row[4];
+    taskId       = (Integer)row[5];
+    value        = (String)row[6];
     isWbsElement = (taskId == null);
-    planItem     = (String)row[6] + "/" + (String)row[7] + (taskName == null? "" : "/" + taskName) ;
+    planItem     = (String)row[7] + "/" + (String)row[8] + (taskName == null? "" : "/" + taskName) ;
   }
 
   CustomColumnRow(){}

@@ -25,12 +25,13 @@ class TimeLog extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new TimeLogRow(row);
+  void addElement(Object[] row){
+    elements.add(new TimeLogRow(row));
   }
+
 }
 
-class TimeLogRow implements DashDataElement{
+class TimeLogRow extends DashDataElement{
   Integer planItemId;
   Integer projectId;
   Integer wbsElementId;

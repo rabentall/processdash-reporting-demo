@@ -35,13 +35,13 @@ class WbsElements extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new WbsElement(row);
+  void addElement(Object[] row) {
+    elements.add(new WbsElement(row));
   }
 
 }
 
-class WbsElement implements DashDataElement{
+class WbsElement extends DashDataElement{
   Integer projectId;
   Integer wbsElementId;
   String  project;

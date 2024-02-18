@@ -21,12 +21,12 @@ class Notes extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new Note(row);
+  void addElement(Object[] row) {
+    elements.add(new Note(row));
   }
 }
 
-class Note implements DashDataElement{
+class Note extends DashDataElement{
   Integer planItemId;
   Integer projectId;
   Integer wbsElementId;

@@ -26,12 +26,13 @@ class Dependencies extends DashDataList{
       load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new Dependency(row);
+  void addElement(Object[] row){
+    elements.add(new Dependency(row));
   }
+
 }
 
-class Dependency implements DashDataElement{
+class Dependency extends DashDataElement{
   Integer Id;
   String  type;
   Integer predecessorId;

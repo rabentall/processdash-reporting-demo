@@ -22,13 +22,13 @@ class SizeMetrics extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new SizeMetric(row);
+  void addElement(Object[] row){
+    elements.add(new SizeMetric(row));
   }
 
 }
 
-class SizeMetric implements DashDataElement{
+class SizeMetric extends DashDataElement{
   Integer projectId;
   Integer wbsElementId;
   String  shortName;

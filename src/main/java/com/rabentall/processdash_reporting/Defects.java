@@ -37,12 +37,13 @@ class Defects extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row){
-    return new Defect(row);
+  void addElement(Object[] row){
+    elements.add(new Defect(row));
   }
+
 }
 
-class Defect implements DashDataElement{
+class Defect extends DashDataElement{
   Integer id;
   Integer planItemId;
   Integer projectId;

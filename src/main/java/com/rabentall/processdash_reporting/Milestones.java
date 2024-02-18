@@ -31,12 +31,12 @@ class Milestones extends DashDataList{
     load(ctx, hql);
   }
 
-  DashDataElement create(Object[] row) throws ParseException{
-    return new Milestone(row);
+  void addElement(Object[] row) throws ParseException{
+    elements.add(new Milestone(row));
   }
 }
 
-class Milestone implements DashDataElement{
+class Milestone extends DashDataElement{
 
   Integer planItemId;
   Integer projectId;
