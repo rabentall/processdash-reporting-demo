@@ -10,58 +10,65 @@ class CustomColumns extends DashDataList{
  * Do we really need wbsElement, project name? Think only really keys and planItem.
  */
 
-//  TaskDetails lookup_ = new TaskDetails();
+  transient TaskDetails taskDetails_ = new TaskDetails();
 
   void load(PDashContext ctx) {
 
     description = "Custom column values.";
 
-    //lookup_.load(ctx); - FIXME
+    taskDetails_.load(ctx);
 
     String hql =
-    " select                           " +
-    "    piaf.id,                      " +
-    "    piaf.attribute.name,          " +
-    "    piaf.planItem.id,             " +
-    "    piaf.planItem.project.id,     " +
-    "    piaf.planItem.wbsElement.id,  " +
-    "    piaf.planItem.task.id,        " +
-    "    piaf.value.text,              " +
-    "    piaf.planItem.project.name,   " +
-    "    piaf.planItem.wbsElement.name " +
-    " from                             " +
-    "    PlanItemAttrFact as piaf      ";
+    " select                            " +
+    "    piaf.id,                       " +
+    "    piaf.planItem.id,              " +
+    "    piaf.planItem.project.id,      " +
+    "    piaf.planItem.wbsElement.id,   " +
+    "    piaf.planItem.task.id,         " +
+    "    piaf.planItem.project.name,    " +
+    "    piaf.planItem.wbsElement.name, " +
+    "    piaf.attribute.name,           " +
+    "    piaf.value.text                " +
+    " from                              " +
+    "    PlanItemAttrFact as piaf       ";
 
     load(ctx, hql);
   }
 
   void addElement(Object[] row){
-    elements.add(new CustomColumnRow(row, "FIXME"));
-  }
-}
-
-class CustomColumnRow extends DashDataElement{
-
-  String  name;
-  Integer planItemId;
-  Integer projectId;
-  Integer wbsElementId;
-  Integer taskId;
-  String  value;
-  Boolean isWbsElement;
-  String  planItem;
-
-  CustomColumnRow(Object[] row, String taskName){
-    id           = (Integer)row[0];
-    name         = (String)row[1];
-    planItemId   = (Integer)row[2];
-    projectId    = (Integer)row[3];
-    wbsElementId = (Integer)row[4];
-    taskId       = (Integer)row[5];
-    value        = (String)row[6];
-    isWbsElement = (taskId == null);
-    planItem     = (String)row[7] + "/" + (String)row[8] + (taskName == null? "" : "/" + taskName) ;
+    elements.add(new CustomColumnRow(row));
   }
 
-  CustomColumnRow(){}
+  class CustomColumnRow extends DashDataElement{
+
+    Integer planItemId;
+    Integer projectId;
+    Integer wbsElementId;
+    Integer taskId;
+    String  projectName;
+    String  wbsElementName;
+    String  taskName;
+    String  attributeName;
+    String  value;
+    Boolean isWbsElement;
+    String  planItem;
+
+    CustomColumnRow(Object[] row){
+      id             = (Integer)row[0];
+      planItemId     = (Integer)row[1];
+      projectId      = (Integer)row[2];
+      wbsElementId   = (Integer)row[3];
+      taskId         = (Integer)row[4];
+      projectName    = (String) row[5];
+      wbsElementName = (String) row[6];
+      taskName       = taskDetails_.elements.get(id);
+      attributeName  = (String)row[7];
+      value          = (String)row[8];
+      isWbsElement   = (taskId == null);
+
+      planItem     = projectName + "/" + wbsElementName + (taskName == null ? "" : "/" + taskName);
+    }
+
+    CustomColumnRow(){}
+  }
 }

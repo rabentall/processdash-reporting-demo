@@ -11,8 +11,10 @@ abstract class DashData {
 
     protected static final Logger logger = Logger.getLogger(DashDataList.class.getName());  //specialised name?
 
-    protected int goodRowCount = 0;
-    protected int badRowCount  = 0;
+    protected int goodRowCount       = 0;
+    protected int badRowCount        = 0;
+    protected int duplicateRowCount  = 0;
+
     protected String description;
 
     protected List<Object[]> getRows(PDashContext ctx, String hql){
@@ -38,6 +40,7 @@ abstract class DashData {
         }
         logger.info("GoodRowCount: " + goodRowCount);
         logger.info("BadRowCount:  " + badRowCount);
+        logger.info("DuplicateRowCount:  " + duplicateRowCount);
     }
 
 
