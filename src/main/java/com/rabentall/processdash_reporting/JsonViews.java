@@ -71,6 +71,7 @@ class DataLoader{
     dashData.put("/timeLog",           new TimeLog());
     dashData.put("/wbsElements",       new WbsElements());
     dashData.put("/dashboardSettings", new DashboardSettings());
+    dashData.put("/planItems",         new PlanItems(lookups));
 
   }
 

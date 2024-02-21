@@ -54,7 +54,7 @@ class Dependencies extends DashDataList{
       predecessor   = getNullablePlanItemString(row[3]);
       successorId   = (Integer)row[4];
       successor     = getNullablePlanItemString(row[5]);
-      successorPhaseIdentifier = lookups_.phaseIdentifiers.get(successorId);
+      successorPhaseIdentifier = lookups_.phaseNames.get(successorId);
     }
     Dependency(){}
   }
