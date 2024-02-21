@@ -8,14 +8,15 @@ class Notes extends DashDataList{
 
     String hql =
       " select                           " +
+      "   pinf.id,                       " +
       "   pinf.planItem.id,              " +
       "   pinf.planItem.project.id,      " +
       "   pinf.planItem.wbsElement.id,   " +
       "   pinf.planItem.task.id,         " +
       "   pinf.note.text,                " +
-      "   pinf.planItem.project.name,    " +
-      "   pinf.planItem.wbsElement.name, " +
-      "   pinf.planItem.task.name        " +
+      "   pinf.planItem,                 " +
+      "   pinf.planItem.leafComponent,   " +
+      "   pinf.planItem.leafTask         " +
       " from PlanItemNoteFact as pinf    ";
 
     load(ctx, hql);
@@ -24,25 +25,28 @@ class Notes extends DashDataList{
   void addElement(Object[] row) {
     elements.add(new Note(row));
   }
-}
 
-class Note extends DashDataElement{
-  Integer planItemId;
-  Integer projectId;
-  Integer wbsElementId;
-  Integer taskId;
-  Boolean isWbsElement;
-  String  note;
-  String  planItem;
+  class Note extends DashDataElement{
+    Integer planItemId;
+    Integer projectId;
+    Integer wbsElementId;
+    Integer taskId;
+    String  note;
+    String  planItem;
+    Boolean isLeafComponent;
+    Boolean isLeafTask;
 
-  Note(Object[] row){
-    planItemId   = (Integer)row[0];
-    projectId    = (Integer)row[1];
-    wbsElementId = (Integer)row[2];
-    taskId       = (Integer)row[3];
-    note         = (String)row[4];
-    isWbsElement = (taskId == null);
-    planItem     = (String) row[5] + "/" + (String) row[6] + "/" + (String) row[7];
+    Note(Object[] row){
+      id              = (Integer)row[0];
+      planItemId      = (Integer)row[1];
+      projectId       = (Integer)row[2];
+      wbsElementId    = (Integer)row[3];
+      taskId          = (Integer)row[4];
+      note            = (String) row[5];
+      planItem        = getNullablePlanItemString(row[6]);
+      isLeafComponent = (Boolean)row[7];
+      isLeafTask      = (Boolean)row[8];
+    }
+    Note(){}
   }
-  Note(){}
 }

@@ -31,7 +31,10 @@ public class JsonViews extends HttpServlet {
         resp.setHeader("Content-Disposition","inline");
 
         Gson gson = new Gson();
-        DataLoader loader = new DataLoader(gson);
+        Lookups lookups = new Lookups(ctx);
+        lookups.load();
+
+        DataLoader loader = new DataLoader(gson, lookups);
 
         //API doesn't use trailing slashes for resource requests.
         //Identify these and return 404 error.
@@ -55,16 +58,12 @@ class DataLoader{
 
   Set<String> values = dashData.keySet();
 
-  //TODO provide option not to serialise (true/false)
-  //TODO - provide lookups via this route.
-  //TODO - accessing lookups?
-
-  DataLoader(Gson gson){
+  DataLoader(Gson gson, Lookups lookups){
     gson_ = gson;
     dashData.put("/customColumns",     new CustomColumns());
     dashData.put("/defects",           new Defects());
-    dashData.put("/dependencies",      new Dependencies());
-    dashData.put("/milestones",        new Milestones());
+    dashData.put("/dependencies",      new Dependencies(lookups));
+    dashData.put("/milestones",        new Milestones(lookups));
     dashData.put("/notes",             new Notes());
     dashData.put("/processPhases",     new ProcessPhases());
     dashData.put("/sizeMetrics",       new SizeMetrics());

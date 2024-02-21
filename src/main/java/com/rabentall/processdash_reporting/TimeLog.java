@@ -9,16 +9,15 @@ class TimeLog extends DashDataList{
 
     String hql =
     " select                         " +
+    "   tlf.id,                      " +
     "   tlf.planItem.key,            " +
     "   tlf.planItem.project.key,    " +
     "   tlf.planItem.wbsElement.key, " +
     "   tlf.deltaMin,                " +
     "   tlf.interruptMin,            " +
     "   tlf.startDate,               " +
-    "   tlf.endDate,                  " +
-    "   tlf.planItem.project.name,    " +
-    "   tlf.planItem.wbsElement.name, " +
-    "   tlf.planItem.task.name        " +
+    "   tlf.endDate,                 " +
+    "   tlf.planItem                 " +
     " from                           " +
     "   TimeLogFact as tlf           ";
 
@@ -29,27 +28,27 @@ class TimeLog extends DashDataList{
     elements.add(new TimeLogRow(row));
   }
 
-}
+  class TimeLogRow extends DashDataElement{
+    Integer planItemId;
+    Integer projectId;
+    Integer wbsElementId;
+    Float   deltaMin;
+    Float   interruptMin;
+    Date    startDate;
+    Date    endDate;
+    String  planItem;
 
-class TimeLogRow extends DashDataElement{
-  Integer planItemId;
-  Integer projectId;
-  Integer wbsElementId;
-  Float   deltaMin;
-  Float   interruptMin;
-  Date    startDate;
-  Date    endDate;
-  String  planItem;
-
-  TimeLogRow(Object[] row){
-    planItemId        = (Integer)row[0];
-    projectId         = (Integer)row[1];
-    wbsElementId      = (Integer)row[2];
-    deltaMin          = (Float)row[3];
-    interruptMin      = (Float)row[4];
-    startDate         = (Date)row[5];
-    endDate           = (Date)row[6];
-    planItem          = (String) row[7] + "/" + (String) row[8] + "/" + (String) row[9];
+    TimeLogRow(Object[] row){
+      id                = (Integer)row[0];
+      planItemId        = (Integer)row[1];
+      projectId         = (Integer)row[2];
+      wbsElementId      = (Integer)row[3];
+      deltaMin          = (Float)row[4];
+      interruptMin      = (Float)row[5];
+      startDate         = (Date)row[6];
+      endDate           = (Date)row[7];
+      planItem          = getNullablePlanItemString(row[8]);
+    }
+    TimeLogRow(){}
   }
-  TimeLogRow(){}
 }

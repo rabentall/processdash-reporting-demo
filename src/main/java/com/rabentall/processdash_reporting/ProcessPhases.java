@@ -6,6 +6,8 @@ class ProcessPhases extends DashDataList{
 
   void load(PDashContext ctx) {
 
+    //TODO - DONT USE PI!
+
     String hql =
         " select distinct " +
         "   pi.phase.process.name, " +
@@ -22,19 +24,18 @@ class ProcessPhases extends DashDataList{
     elements.add(new ProcessPhase(row));
   }
 
-}
+  class ProcessPhase extends DashDataElement{
+    Object process;
+    Integer ordinal;
+    Object shortName;
+    Object typeName;
 
-class ProcessPhase extends DashDataElement{
-  Object process;
-  Integer ordinal;
-  Object shortName;
-  Object typeName;
-
-  ProcessPhase(Object[] row){
-    process   = (String)row[0];
-    ordinal   = (Integer)row[1];
-    shortName = (String)row[2];
-    typeName  = (String)row[3];
+    ProcessPhase(Object[] row){
+      process   = (String)row[0];
+      ordinal   = (Integer)row[1];
+      shortName = (String)row[2];
+      typeName  = (String)row[3];
+    }
+    ProcessPhase(){}
   }
-  ProcessPhase(){}
 }

@@ -103,27 +103,25 @@ class Tasks extends DashDataList{
     //FIXME;
   }
 
-
-}
-
-class Task extends DashDataElement{
-  Integer planItemId;
-  Integer projectId;
-  Integer wbsElementId;
-  Integer taskId;
-  String  project;
-  String  wbsElement;
-  String  task;
-  String  phase;
-  Double  planTimeHours;
-  Double  actualTimeHours;
-  Date    actualStartDate;
-  Date    actualCompletionDate;
-  Date    planDate;
-  Date    replanDate;
-  Date    forecastDate;
-  String  planItem;
-  Boolean isComplete;
-  ActivityStatus activityStatus;
-  Task(){}
-}
+  class Task extends DashDataElement{
+    Integer planItemId;
+    Integer projectId;
+    Integer wbsElementId;
+    Integer taskId;
+    String  project;
+    String  wbsElement;
+    String  task;
+    String  phase;
+    Double  planTimeHours;
+    Double  actualTimeHours;
+    Date    actualStartDate;
+    Date    actualCompletionDate;
+    Date    planDate;
+    Date    replanDate;
+    Date    forecastDate;
+    String  planItem;
+    Boolean isComplete;
+    ActivityStatus activityStatus;
+    Task(){}
+  }
+  }

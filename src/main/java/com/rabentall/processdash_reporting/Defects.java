@@ -29,9 +29,7 @@ class Defects extends DashDataList{
         "   d.fixCount,                                " +
         "   d.fixPending,                              " +
         "   d.description.text,                        " +
-        "   d.planItem.project.name,                   " +
-        "   d.planItem.wbsElement.name,                " +
-        "   d.planItem.task.name                       " +
+        "   d.planItem                                 " +
         " from DefectLogFact as d order by d.foundDate ";
 
     load(ctx, hql);
@@ -41,52 +39,50 @@ class Defects extends DashDataList{
     elements.add(new Defect(row));
   }
 
-}
+  class Defect extends DashDataElement{
+    Integer planItemId;
+    Integer projectId;
+    Integer wbsElementId;
+    Integer taskId;
+    Date    foundDate;
+    String  defectType;
+    String  injectedPhaseProcess;
+    Integer injectedPhaseOrdinal;
+    String  injectedPhase;
+    String  injected;
+    String  removedPhaseProcess;
+    Integer removedPhaseOrdinal;
+    String  removedPhase;
+    String  removed;
+    Float   fixTimeMin;
+    Short   fixCount;
+    Boolean fixPending;
+    String  description;
+    String  planItem;
 
-class Defect extends DashDataElement{
-  Integer id;
-  Integer planItemId;
-  Integer projectId;
-  Integer wbsElementId;
-  Integer taskId;
-  Date    foundDate;
-  String  defectType;
-  String  injectedPhaseProcess;
-  Integer injectedPhaseOrdinal;
-  String  injectedPhase;
-  String  injected;
-  String  removedPhaseProcess;
-  Integer removedPhaseOrdinal;
-  String  removedPhase;
-  String  removed;
-  Float   fixTimeMin;
-  Short   fixCount;
-  Boolean fixPending;
-  String  description;
-  String  planItem;
+    Defect(Object[] row){
+      id                    = (Integer)row[0];
+      planItemId            = (Integer)row[1];
+      projectId             = (Integer)row[2];
+      wbsElementId          = (Integer)row[3];
+      taskId                = (Integer)row[4];
+      foundDate             = (Date)   row[5];
+      defectType            = (String) row[6];
+      injectedPhaseProcess  = (String) row[7];
+      injectedPhaseOrdinal  = (Integer)row[8];
+      injectedPhase         = (String) row[9];
+      injected              = String.format("%s.%02d.%s", injectedPhaseProcess, injectedPhaseOrdinal, injectedPhase);
+      removedPhaseProcess   = (String) row[10];
+      removedPhaseOrdinal   = (Integer)row[11];
+      removedPhase          = (String) row[12];
+      removed               = String.format("%s.%02d.%s", removedPhaseProcess, removedPhaseOrdinal, removedPhase);
+      fixTimeMin            = (Float)  row[13];
+      fixCount              = (Short)  row[14];
+      fixPending            = (Boolean)row[15];
+      description           = (String) row[16];
+      planItem              = getNullablePlanItemString(row[17]);
+    }
 
-  Defect(Object[] row){
-    id                    = (Integer)row[0];
-    planItemId            = (Integer)row[1];
-    projectId             = (Integer)row[2];
-    wbsElementId          = (Integer)row[3];
-    taskId                = (Integer)row[4];
-    foundDate             = (Date)   row[5];
-    defectType            = (String) row[6];
-    injectedPhaseProcess  = (String) row[7];
-    injectedPhaseOrdinal  = (Integer)row[8];
-    injectedPhase         = (String) row[9];
-    injected              = String.format("%s.%02d.%s", injectedPhaseProcess, injectedPhaseOrdinal, injectedPhase);
-    removedPhaseProcess   = (String) row[10];
-    removedPhaseOrdinal   = (Integer)row[11];
-    removedPhase          = (String) row[12];
-    removed               = String.format("%s.%02d.%s", removedPhaseProcess, removedPhaseOrdinal, removedPhase);
-    fixTimeMin            = (Float)  row[13];
-    fixCount              = (Short)  row[14];
-    fixPending            = (Boolean)row[15];
-    description           = (String) row[16];
-    planItem              = (String) row[17] + "/" + (String) row[18] + "/" + (String) row[19];
+    Defect(){}
   }
-
-  Defect(){}
 }

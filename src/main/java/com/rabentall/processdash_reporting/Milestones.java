@@ -8,35 +8,15 @@ import net.sourceforge.processdash.api.PDashContext;
 
 class Milestones extends DashDataList{
 
-  transient String MILESTONE_COLOR_HQL =
-  " select                                 " +
-  "   piaf.planItem.id,                    " +
-  "   piaf.value.text                      " +
-  " from                                   " +
-  "   PlanItemAttrFact as piaf             " +
-  " where                                  " +
-  "   piaf.attribute.name='Milestone Color'";
+  transient Lookups lookups_;
 
-  transient Lookup<String> milestoneColors_ = new Lookup<String>(MILESTONE_COLOR_HQL);
-
-  transient String MILESTONE_COMMT_DATE_HQL =
-  " select                                       " +
-  "   piaf.planItem.id,                          " +
-  "   piaf.value.text                            " +
-  " from                                         " +
-  "   PlanItemAttrFact as piaf                   " +
-  " where                                        " +
-  "   piaf.attribute.name='Milestone Commit Date'";
-
-  transient Lookup<String> milestoneCommitDate_ = new Lookup<String>(MILESTONE_COMMT_DATE_HQL);
-
+  Milestones(Lookups lookups){
+    lookups_ = lookups;
+  }
 
   void load(PDashContext ctx) {
 
     description = "Milestone information for each planItem.";
-
-    milestoneColors_.load(ctx);
-    milestoneCommitDate_.load(ctx);
 
     String hql =
     " select                                                         " +
@@ -84,9 +64,9 @@ class Milestones extends DashDataList{
       milestonePlanItem   = getNullablePlanItemString(row[6]);
       milestoneName       = (String)row[7];
 
-      milestoneColor      = milestoneColors_.elements.get(milestonePlanItemId);
+      milestoneColor      = lookups_.milestoneColors.get(milestonePlanItemId);
 
-      String milestoneCommitDateStr = milestoneCommitDate_.elements.get(milestonePlanItemId);
+      String milestoneCommitDateStr = lookups_.milestoneCommitDate.get(milestonePlanItemId);
 
       //FIXME - UGLY. Also not sure the output is more useful than yyyy-mm-dd/
       //Dec 31, 2023 12:00:00 AM

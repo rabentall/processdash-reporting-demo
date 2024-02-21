@@ -26,22 +26,21 @@ class SizeMetrics extends DashDataList{
     elements.add(new SizeMetric(row));
   }
 
-}
+  class SizeMetric extends DashDataElement{
+    Integer projectId;
+    Integer wbsElementId;
+    String  shortName;
+    String  measurementType;
+    Double  addedAndModifiedSize;
 
-class SizeMetric extends DashDataElement{
-  Integer projectId;
-  Integer wbsElementId;
-  String  shortName;
-  String  measurementType;
-  Double  addedAndModifiedSize;
+    SizeMetric(Object[] row){
+      projectId             = (Integer)row[0];
+      wbsElementId          = (Integer)row[1];
+      shortName             = (String)row[2];
+      measurementType       = (String)row[3];
+      addedAndModifiedSize  = (Double)row[4];
+    }
 
-  SizeMetric(Object[] row){
-    projectId             = (Integer)row[0];
-    wbsElementId          = (Integer)row[1];
-    shortName             = (String)row[2];
-    measurementType       = (String)row[3];
-    addedAndModifiedSize  = (Double)row[4];
+    SizeMetric(){}
   }
-
-  SizeMetric(){}
 }

@@ -13,7 +13,7 @@ class Lookup<T> extends DashData {
         hql_ = hql;
     }
 
-    protected Map<Integer, T> elements = new HashMap<Integer, T>();
+    private Map<Integer, T> elements = new HashMap<Integer, T>();
 
     @Override
     void addElement(Object[] row){
@@ -29,5 +29,9 @@ class Lookup<T> extends DashData {
     @Override
     void load(PDashContext ctx) {
         load(ctx, hql_);
+    }
+
+    T get(Integer key){
+      return elements.get(key);
     }
 }

@@ -39,48 +39,47 @@ class WbsElements extends DashDataList{
     elements.add(new WbsElement(row));
   }
 
-}
+  class WbsElement extends DashDataElement{
+    Integer projectId;
+    Integer wbsElementId;
+    String  project;
+    String  wbsElement;
+    String  process;
+    Double  planTimeHours;
+    Double  actualTimeHours;
+    Date    actualStartDate;
+    Date    actualCompletionDate;
+    Long    countOfTasks;
+    Long    countOfStartedTasks;
+    Long    countOfCompletedTasks;
+    Boolean isComplete;
+    ActivityStatus activityStatus;
 
-class WbsElement extends DashDataElement{
-  Integer projectId;
-  Integer wbsElementId;
-  String  project;
-  String  wbsElement;
-  String  process;
-  Double  planTimeHours;
-  Double  actualTimeHours;
-  Date    actualStartDate;
-  Date    actualCompletionDate;
-  Long    countOfTasks;
-  Long    countOfStartedTasks;
-  Long    countOfCompletedTasks;
-  Boolean isComplete;
-  ActivityStatus activityStatus;
+    WbsElement(Object[] row){
+      projectId              = (Integer)row[0];
+      wbsElementId           = (Integer)row[1];
+      project                = (String)row[2];
+      wbsElement             = (String)row[3];
+      process                = (String)row[4];
+      planTimeHours          = (Double)row[5];
+      actualTimeHours        = (Double)row[6];
+      actualStartDate        = (Date)row[7];
+      actualCompletionDate   = (Date)row[8];
+      countOfTasks           = (Long)row[9];
+      countOfStartedTasks    = (Long)row[10];
+      countOfCompletedTasks  = (Long)row[11];
 
-  WbsElement(Object[] row){
-    projectId              = (Integer)row[0];
-    wbsElementId           = (Integer)row[1];
-    project                = (String)row[2];
-    wbsElement             = (String)row[3];
-    process                = (String)row[4];
-    planTimeHours          = (Double)row[5];
-    actualTimeHours        = (Double)row[6];
-    actualStartDate        = (Date)row[7];
-    actualCompletionDate   = (Date)row[8];
-    countOfTasks           = (Long)row[9];
-    countOfStartedTasks    = (Long)row[10];
-    countOfCompletedTasks  = (Long)row[11];
-
-    if(countOfStartedTasks == 0){
-      activityStatus = ActivityStatus.TODO;
-    } else if(countOfStartedTasks > 0 && countOfCompletedTasks < countOfTasks){
-      activityStatus = ActivityStatus.WIP;
-    } else if(countOfCompletedTasks == countOfTasks){
-      activityStatus = ActivityStatus.COMPLETED;
-    } else {
-      activityStatus = ActivityStatus.UNKNOWN;
+      if(countOfStartedTasks == 0){
+        activityStatus = ActivityStatus.TODO;
+      } else if(countOfStartedTasks > 0 && countOfCompletedTasks < countOfTasks){
+        activityStatus = ActivityStatus.WIP;
+      } else if(countOfCompletedTasks == countOfTasks){
+        activityStatus = ActivityStatus.COMPLETED;
+      } else {
+        activityStatus = ActivityStatus.UNKNOWN;
+      }
     }
-  }
 
-  WbsElement(){}
+    WbsElement(){}
+  }
 }
