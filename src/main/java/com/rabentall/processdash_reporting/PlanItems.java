@@ -75,6 +75,8 @@ class PlanItems extends DashDataList{
     String phaseShortName;
 
     String outlineNumber;
+    String outlineHeading;
+    int    outlineLevel;
 
     PlanItem(Object[] row){
       id                   = (Integer)row[ 0];
@@ -103,7 +105,11 @@ class PlanItems extends DashDataList{
       phaseTypeName  = lookups_.phaseTypeNames.get(id);
       phaseShortName = lookups_.phaseShortNames.get(id);
 
+
       outlineNumber  = getOutlineNumber();
+      outlineHeading = getOutlineHeading();
+      outlineLevel   = getDepth() - initialDepth_ + 1;
+
     }
     PlanItem(){}
 
@@ -143,6 +149,15 @@ class PlanItems extends DashDataList{
       }
 
       return outlineNumber.toString();
+    }
+
+    private String getOutlineHeading(){
+
+      String[] elems = planItem.split("/"); //First element will be empty.
+
+      assert elems.length > 0 : "Element list must be longer than 0";
+
+      return elems[elems.length - 1]; //return the last element in the array
     }
   }
 }
