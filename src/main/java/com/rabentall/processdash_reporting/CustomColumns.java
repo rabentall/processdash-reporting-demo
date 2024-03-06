@@ -2,6 +2,9 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns a list of custom columns and values.
+ */
 class CustomColumns extends DashDataList{
 
   void load(PDashContext ctx) {
@@ -41,7 +44,6 @@ class CustomColumns extends DashDataList{
     String  value;
     Boolean isLeafComponent;
     Boolean isLeafTask;
-
 
     CustomColumnRow(Object[] row){
       id              = (Integer)row[0];

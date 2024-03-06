@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 //TODO = HOW TO SIMPLIFY SO WE CAN HANDLE IN SAME WAY AS OTHERS????
+//TODO - Filter on TaskAndScheduleRollup
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * Returns the set of Tasks associated with this dashboard.
+ */
 class Tasks extends DashDataList{
 
   List<Task> tasks = new ArrayList<Task>();

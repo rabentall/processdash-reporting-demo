@@ -6,6 +6,11 @@ import java.text.ParseException;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns the set of milestones within the dashboard. Lookups are used
+ * to populate milestone colour and milestone commit date.
+ */
+
 class Milestones extends DashDataList{
 
   transient Lookups lookups_;

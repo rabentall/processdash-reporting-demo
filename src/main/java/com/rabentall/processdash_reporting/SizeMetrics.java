@@ -2,6 +2,9 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns the SizeMetrics associated with this dashboard
+ */
 class SizeMetrics extends DashDataList{
 
   void load(PDashContext ctx) {

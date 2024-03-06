@@ -1,8 +1,12 @@
 package com.rabentall.processdash_reporting;
 import java.util.Date;
 
+//TODO - Filter with rollup name.
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns Summary data for individual components (leaf-node WBS elements).
+ */
 class WbsElements extends DashDataList{
 
   void load(PDashContext ctx) {
@@ -52,7 +56,6 @@ class WbsElements extends DashDataList{
     Long    countOfTasks;
     Long    countOfStartedTasks;
     Long    countOfCompletedTasks;
-    Boolean isComplete;
     ActivityStatus activityStatus;
 
     WbsElement(Object[] row){

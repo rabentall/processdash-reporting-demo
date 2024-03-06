@@ -2,6 +2,9 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns notes associated with PlanItems.
+ */
 class Notes extends DashDataList{
 
   void load(PDashContext ctx) {

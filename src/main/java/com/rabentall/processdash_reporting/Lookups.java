@@ -2,6 +2,11 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Provides access to the different key-value pair lookups used by the API.
+ * These are not accessible via the jsonViews API, but are used to construct data returned
+ * by the API.
+ */
 public class Lookups {
 
     PDashContext ctx_;

@@ -2,11 +2,8 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
-/*
- * Add in dep.predecessor and dep.successor
- *
- * second query to get successor phase identifier.
- *
+/**
+ * \brief Returns a list of dependencies between PlanItem elements.
  */
 
 class Dependencies extends DashDataList{
@@ -19,7 +16,7 @@ class Dependencies extends DashDataList{
 
   void load(PDashContext ctx) {
 
-    description = "List of dependencies...";
+    description = "List of dependencies.";
 
     String hql =
       " select                         " +
@@ -43,6 +40,7 @@ class Dependencies extends DashDataList{
     String  type;
     Integer predecessorId;
     String  predecessor;
+    String  predecessorPhaseIdentifier;
     Integer successorId;
     String  successor;
     String  successorPhaseIdentifier;
@@ -52,6 +50,7 @@ class Dependencies extends DashDataList{
       type          = (String) row[1];
       predecessorId = (Integer)row[2];
       predecessor   = getNullablePlanItemString(row[3]);
+      predecessorPhaseIdentifier = lookups_.phaseNames.get(predecessorId);
       successorId   = (Integer)row[4];
       successor     = getNullablePlanItemString(row[5]);
       successorPhaseIdentifier = lookups_.phaseNames.get(successorId);

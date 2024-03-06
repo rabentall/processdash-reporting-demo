@@ -1,10 +1,18 @@
 package com.rabentall.processdash_reporting;
 
-
+/**
+ * \brief Base class for all data elements returned by the API.
+ */
 public abstract class DashDataElement{
+
+    /**
+     * \brief Unique identifier for this element.
+     */
     Integer id;
 
-    //Produces planItem toString with only single "/" at start (so consistent with jsp behaviour)
+    /**
+     * \brief Produces planItem toString with only single "/" at start (so consistent with jsp behaviour).
+     */
     protected String getNullablePlanItemString(Object obj){
 
         if(obj == null){

@@ -6,6 +6,13 @@ import java.util.Collections;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+//TODO - Change name - PlanItemInfos?
+
+/**
+ * \brief Returns a list of PlanItems from this dashboard.
+ * The PlanItem type defined here includes outline numbering fields that
+ * may be used during model rendering.
+ */
 class PlanItems extends DashDataList{
 
   transient Lookups lookups_;
@@ -125,6 +132,10 @@ class PlanItems extends DashDataList{
       return planItem.length() - planItem.replace("/","").length();
     }
 
+    /**
+     * \brief Returns the outline number associated with this PlanItem. The outline number
+     * is padded to three digits to ensure correct ordering when sorted lexically.
+     */
     private String getOutlineNumber(){
       //Depth is the absolute number of levels as implied by the number of "/" characters:
       if(isFirstElement_){
@@ -132,7 +143,8 @@ class PlanItems extends DashDataList{
         isFirstElement_ = false;
       }
 
-      //Level is the difference between the current depth and the initial depth (so accounting for the root node having a non-zero depth):
+      //Level is the difference between the current depth and the initial depth
+      //(so accounting for the root node having a non-zero depth):
       int currentLevel = getDepth() - initialDepth_;
 
       //The ordinal returns the order at "this" level:
@@ -151,6 +163,10 @@ class PlanItems extends DashDataList{
       return outlineNumber.toString();
     }
 
+    /**
+     * \brief Returns the outline heading (lowest-level element of the path)
+     * associated with this PlanItem.
+     */
     private String getOutlineHeading(){
 
       String[] elems = planItem.split("/"); //First element will be empty.

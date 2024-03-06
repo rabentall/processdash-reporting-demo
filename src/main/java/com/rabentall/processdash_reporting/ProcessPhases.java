@@ -2,6 +2,9 @@ package com.rabentall.processdash_reporting;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns the set of ProcessPhases defined within this dashboard.
+ */
 class ProcessPhases extends DashDataList{
 
   void load(PDashContext ctx) {

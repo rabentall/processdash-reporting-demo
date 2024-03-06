@@ -3,6 +3,9 @@ package com.rabentall.processdash_reporting;
 import java.util.Date;
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns timelog data associated with this dashboard.
+ */
 class TimeLog extends DashDataList{
 
   void load(PDashContext ctx) {

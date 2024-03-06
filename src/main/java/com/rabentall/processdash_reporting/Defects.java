@@ -4,11 +4,14 @@ import java.util.Date;
 
 import net.sourceforge.processdash.api.PDashContext;
 
+/**
+ * \brief Returns a list of Defects.
+ */
 class Defects extends DashDataList{
 
   void load(PDashContext ctx) {
 
-    description = "List of defects....";
+    description = "Defects recorded in the dashboard.";
 
     String hql =
         " select                                       " +
