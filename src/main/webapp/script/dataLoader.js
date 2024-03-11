@@ -166,10 +166,13 @@ class TaskDetails{
     return Math.trunc(elapsedMs/dayMs) + 1;
   }
 
+  /**
+   * \brief if we use replan date for this, in normal use, the replan date is only in the past if the task has been completed.
+   * @param
+   * @returns
+   */
   function getDateBucket(days){
-    if(days <= 0){
-      return "COMPLETED";
-    } else if(days <= 14){
+    if(days <= 14){
       return "LTE14";
     } else if(days <= 35){
       return "LTE35";
@@ -203,7 +206,7 @@ class TaskDetails{
       const response = await fetch(JSONVIEWS_URL + "/customColumns");
       const labelsJson = await response.json();
 
-      labelsJson.customColumns.forEach((customColumn) => {
+      labelsJson.elements.forEach((customColumn) => {
 
         if(customColumn.name == 'Label'){
 
@@ -230,7 +233,7 @@ class TaskDetails{
       const response = await fetch(JSONVIEWS_URL + "/notes");
       const notesJson = await response.json();
 
-      notesJson.notes.forEach((note) => {
+      notesJson.elements.forEach((note) => {
 
         notes_.set(note.planItem, note.note);
 
